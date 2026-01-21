@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BlinkWallet</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<h1>BlinkWallet</h1>
+
+
+
+<!-- HOME -->
+<section id="home" class="tab active">
+  <h2>Welcome 👋</h2>
+  <p id="username"></p>
+
+  <h3>Market prices</h3>
+  <ul id="prices"></ul>
+</section>
+
+<!-- ASSETS -->
+<section id="assets" class="tab">
+  <h2>Your Assets</h2>
+
+  <p>
+    <b>Total value:</b>
+    <span id="total-usd">$0.00</span>
+  </p>
+
+  <ul id="assets-list"></ul>
+
+  <div class="asset-actions">
+    <button id="open-deposit">Deposit</button>
+    <button id="open-withdraw">Withdraw</button>
+    <button id="open-swap">Swap</button>
+  </div>
+
+  <!-- DEPOSIT -->
+  <div id="panel-deposit" class="panel hidden">
+    <h3>Deposit</h3>
+    <input id="deposit-amount" type="number" />
+    <select id="deposit-currency"></select>
+    <button id="confirm-deposit">Confirm</button>
+  </div>
+
+  <!-- WITHDRAW -->
+  <div id="panel-withdraw" class="panel hidden">
+    <h3>Withdraw</h3>
+    <input id="withdraw-amount" type="number" />
+    <button id="withdraw-max">MAX</button>
+    <p class="available" id="withdraw-available"></p>
+    <select id="withdraw-currency"></select>
+    <button id="confirm-withdraw">Confirm</button>
+  </div>
+
+  <!-- SWAP -->
+  <div id="panel-swap" class="panel hidden">
+    <h3>Swap</h3>
+    <input id="swap-amount" type="number" />
+    <button id="swap-max">MAX</button>
+    <p class="available" id="swap-available"></p>
+    <select id="swap-from"></select>
+    →
+    <select id="swap-to"></select>
+    <button id="confirm-swap">Confirm</button>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history" class="tab">
+  <h2>History</h2>
+  <ul id="history-list"></ul>
+</section>
+
+<!-- SETTINGS -->
+<section id="settings" class="tab">
+  <h2>Settings</h2>
+  <p>Account settings will be here.</p>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>
+
+<nav class="bottom-nav">
+  <button data-tab="home" class="nav-item active">
+    🏠
+    <span>Home</span>
+  </button>
+  <button data-tab="assets" class="nav-item">
+    💼
+    <span>Assets</span>
+  </button>
+  <button data-tab="history" class="nav-item">
+    🕘
+    <span>History</span>
+  </button>
+  <button data-tab="settings" class="nav-item">
+    ⚙️
+    <span>Settings</span>
+  </button>
+</nav>
