@@ -12,7 +12,7 @@ type CoinGeckoResponse map[string]map[string]float64
 
 const (
 	outputFile = "rates.json"
-	interval   = 240 * time.Second
+	interval   = 10 * time.Second
 )
 
 func main() {
