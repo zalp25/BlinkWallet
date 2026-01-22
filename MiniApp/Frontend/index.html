@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BlinkWallet</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="top-bar">
+  <button id="back-btn" class="hidden">← Back</button>
+  <h1>BlinkWallet</h1>
+</header>
+
+<!-- MAIN CONTENT -->
+<main>
+
+  <!-- HOME -->
+  <section id="home" class="tab active">
+    <h2>Welcome 👋</h2>
+    <p id="username"></p>
+
+    <h3>Market prices</h3>
+    <ul id="prices"></ul>
+  </section>
+
+  <!-- ASSETS -->
+  <section id="assets" class="tab">
+    <h2>Your Assets</h2>
+
+    <p>
+      <b>Total value:</b>
+      <span id="total-usd">$0.00</span>
+    </p>
+
+    <ul id="assets-list"></ul>
+
+    <div class="asset-actions">
+      <button id="open-deposit">Deposit</button>
+      <button id="open-withdraw">Withdraw</button>
+      <button id="open-swap">Swap</button>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section id="history" class="tab">
+    <h2>History</h2>
+    <ul id="history-list"></ul>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="settings" class="tab">
+    <h2>Settings</h2>
+    <p>Account settings will be here.</p>
+  </section>
+
+  <!-- ===== OVERLAY PANELS ===== -->
+
+  <!-- DEPOSIT -->
+  <section id="panel-deposit" class="panel hidden">
+  <h3>Deposit</h3>
+
+  <div class="swap-row">
+    <input
+      id="deposit-amount"
+      type="number"
+      placeholder="Amount"
+    />
+    <select id="deposit-currency"></select>
+  </div>
+
+  <p id="deposit-error" class="error"></p>
+
+  <div class="swap-actions">
+    <button id="confirm-deposit">Confirm</button>
+  </div>
+</section>
+
+
+  <!-- WITHDRAW -->
+  <section id="panel-withdraw" class="panel hidden">
+  <h3>Withdraw</h3>
+
+  <div class="swap-row">
+    <input
+      id="withdraw-amount"
+      type="number"
+      placeholder="Amount"
+    />
+    <select id="withdraw-currency"></select>
+  </div>
+
+  <p id="withdraw-error" class="error"></p>
+
+  <div class="swap-actions">
+    <button id="withdraw-max">MAX</button>
+    <button id="confirm-withdraw">Confirm</button>
+  </div>
+</section>
+
+
+  <!-- SWAP -->
+<section id="panel-swap" class="panel hidden">
+  <h3>Swap</h3>
+
+  <div class="swap-row">
+    <input id="swap-from-amount" placeholder="You pay" />
+    <select id="swap-from-currency"></select>
+  </div>
+
+  <div class="swap-row">
+    <input id="swap-to-amount" placeholder="You receive" />
+    <select id="swap-to-currency"></select>
+  </div>
+
+  <p id="swap-error" class="error"></p>
+
+  <div class="swap-actions">
+    <button id="swap-max">MAX</button>
+    <button id="confirm-swap">Confirm</button>
+  </div>
+</section>
+
+
+<!-- BOTTOM NAV -->
+<nav id="bottom-nav" class="bottom-nav">
+  <button class="nav-item active" data-tab="home">
+    🏠 <span>Home</span>
+  </button>
+  <button class="nav-item" data-tab="assets">
+    💼 <span>Assets</span>
+  </button>
+  <button class="nav-item" data-tab="history">
+    🕘 <span>History</span>
+  </button>
+  <button class="nav-item" data-tab="settings">
+    ⚙️ <span>Settings</span>
+  </button>
+</nav>
+
+<!-- JS -->
+<script type="module" src="./app.js"></script>
+
+</body>
+</html>
