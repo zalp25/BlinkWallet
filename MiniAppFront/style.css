@@ -1,57 +1,13 @@
-/* ---------- GLOBAL ---------- */
-:root {
-  --primary-color: #05070d;
-  --text-color: #ffffff;
-  --radius: 30px;
-  --pading: 5px 18px;
-  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-}
-html {
-  min-height: 100%;
-  background: linear-gradient(
-    135deg,
-    #1e1e1e 0%,
-    #121212 100%
-  );
-}
-
-/* ---------- PAGE ---------- */
 body {
-  font-family: var(--font);
-  font-size: smaller;
+  font-family: Arial, sans-serif;
   padding: 20px;
-  color: var(--text-color);
-  overflow-x: hidden;
-
-  background: transparent;
 }
 
-/* ---------- BUTTON RESET ---------- */
 button {
-  all: unset;
+  all: unset;          /* 💣 знімає ВСІ стандартні стилі */
   cursor: pointer;
-  font-family: var(--font);
-  font-size: smaller;
-  font-weight: 600;
-  color: #ffffff;
-  background-color: #acacac30;
-  border-radius: var(--radius);
-  padding: 8px 15px;
 }
 
-input, select {
-  margin: 5px;
-  font-family: var(--font);
-  font-size: smaller;
-  font-weight: 600;
-  color: #ffffff;
-  background-color: #acacac30;
-  border-radius: var(--radius);
-  padding: 5px;
-}
-
-/* ---------- TABS ---------- */
 .tabs {
   display: flex;
   gap: 10px;
@@ -60,6 +16,7 @@ input, select {
 
 .tabs button {
   padding: 6px 14px;
+  cursor: pointer;
   background: none;
 }
 
@@ -68,7 +25,6 @@ input, select {
   border-bottom: 2px solid black;
 }
 
-/* ---------- TAB CONTENT ---------- */
 .tab {
   display: none;
 }
@@ -77,19 +33,16 @@ input, select {
   display: block;
 }
 
-/* ---------- LISTS ---------- */
 ul {
   padding-left: 20px;
 }
 
-/* ---------- ASSET ACTIONS ---------- */
 .asset-actions {
   margin: 15px 0;
   display: flex;
   gap: 10px;
 }
 
-/* ---------- PANELS ---------- */
 .panel {
   border: 1px solid #ccc;
   padding: 12px;
@@ -100,17 +53,20 @@ ul {
   display: none;
 }
 
-/* ---------- FORM ---------- */
 input.invalid {
   border: 2px solid red;
 }
 
 .available {
   font-size: 12px;
-  color: #9a9a9a;
+  color: #555;
 }
 
-/* ---------- BOTTOM NAV ---------- */
+input, select, button {
+  margin: 5px;
+  padding: 5px;
+}
+
 .bottom-nav {
   position: fixed;
   bottom: 20px;
@@ -118,71 +74,24 @@ input.invalid {
   transform: translateX(-50%);
 
   display: flex;
-  gap: 5px;
-  padding: 6px;
-  border-radius: 35px;
+  gap: 20px;
 
-  color: #cdcdcda8;
+  padding: 12px 20px;
+  border-radius: 24px;
 
-  /* Glass material */
-  background:
-    linear-gradient(
-      180deg,
-      rgba(100, 100, 100, 0.019),
-      rgba(34, 34, 34, 0.04)
-    );
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-
-  /* Glass edges */
-  border: 1px solid rgba(255,255,255,0.14);
-  box-shadow:
-    0 12px 32px rgba(0,0,0,0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.099);
+  background: linear-gradient(180deg, #1c1f4a, #14163a);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-
-.nav-item {
-  padding: var(--pading);
-  border-radius: 18px;
-  font-size: x-small;
-  font-weight: 600;
-  background-color: transparent;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* Active state */
 .nav-item.active {
-  position: relative;
-  overflow: hidden;
-
+  background: rgba(90, 110, 255, 0.25);
   color: #ffffff;
-  border-radius: 30px;
-  padding: var(--pading);
 
-  /* Active glass material */
-  background: linear-gradient(
-    180deg,
-    rgba(81, 81, 81, 0.18),
-    rgba(255,255,255,0.06)
-  );
-
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-
-  /* Glass edge + depth */
   box-shadow:
-    0 8px 24px rgba(0,0,0,0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.067);
+    inset 0 0 0 1px rgba(120,140,255,0.6),
+    0 0 12px rgba(120,140,255,0.6);
 }
 
-
-/* Hover */
 .nav-item:hover {
-  background: rgba(202, 202, 202, 0.026);
-  padding: var(--pading);
-  border-radius: 30px;
+  background: rgba(255,255,255,0.08);
 }
