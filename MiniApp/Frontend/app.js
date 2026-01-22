@@ -13,7 +13,7 @@ let overlayOpen = false;
 
 /* ===== DATA LOAD ===== */
 async function loadRates() {
-  const res = await fetch("../Backend/rates.json");
+  const res = await fetch("./Backend/rates.json");
   state.rates = await res.json();
 
   // IMPORTANT: всі валюти існують навіть з 0 балансом
