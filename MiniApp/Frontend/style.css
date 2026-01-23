@@ -46,7 +46,7 @@ html {
   min-height: 100%;
   /* Встановлюємо жорстку базу 16px. Це стандарт. 
      Більше ніяких 'clamp' і 'vw', які ламали верстку на ПК. */
-  font-size: 1.3rem;
+  font-size: 1.25rem;
 
   background: linear-gradient(
     135deg,
@@ -126,15 +126,15 @@ ul {
 }
 
 h2.welcome {
-  font-size: 1.4rem;
+  font-size: 1.7rem;
   font-weight: 400;
   margin-bottom: -0.5rem;
   color: rgb(215, 215, 215);
 }
 
 #username {
-  font-size: 1.8rem;
-  font-weight: 640;
+  font-size: 2rem;
+  font-weight: 650;
   color: var(--color-text-main);
   margin-bottom: 1rem;
 }
@@ -263,7 +263,7 @@ select option {
 #open-withdraw,
 #open-swap {
   margin-bottom: 0.8rem;
-  min-height: 3.5rem; /* Кнопки дій зробив трохи більшими */
+  min-height: 3.2rem; /* Кнопки дій зробив трохи більшими */
   width: 100%;
 }
 
@@ -435,16 +435,15 @@ input.input-error {
 
 .dws-balances {
   color: rgba(255, 255, 255, 0.36);
-  margin-top: 1rem;
+  margin-top: 0.8rem;
   padding: 0.75rem 1rem;
-
-  font-size: 1rem;
+  font-size: 1.4rem;
   opacity: 1;
 }
 
 .dws-balances-title {
   color: rgba(255, 255, 255, 0.69);
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 600;
   margin-bottom: 0.4rem;
 }
