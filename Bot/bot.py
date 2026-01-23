@@ -18,7 +18,7 @@ if not BOT_TOKEN:
 bot = Bot(BOT_TOKEN)
 dp = Dispatcher()
 
-MINI_APP_URL = "https://blinkwalletg.pages.dev/"  # ← ОСЬ ТУТ ПОСИЛАННЯ
+MINI_APP_URL = "https://a7e2bcb4.blinkwalletg.pages.dev/"  # ← ОСЬ ТУТ ПОСИЛАННЯ
 
 @dp.message(CommandStart())
 async def start_handler(message: Message):

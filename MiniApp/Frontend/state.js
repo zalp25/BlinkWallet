@@ -2,7 +2,7 @@ export const state = {
   rates: {},
   balances: {},
   history: [],
-  username: "Sasha"
+  username: "Alex"
 };
 
 export const DECIMALS = {
@@ -12,7 +12,8 @@ export const DECIMALS = {
   SOL: 4,
   BLINKW: 4,
   BTC: 6,
-  ETH: 6
+  ETH: 6,
+  ZALP: 2
 };
 
 export const MIN_AMOUNTS = {
@@ -23,6 +24,18 @@ export const MIN_AMOUNTS = {
   TON: 3.5,
   TRX: 17,
   BTC: 0.00006,
+  ZALP: 10
+};
+
+export const MAX_AMOUNTS = {
+  USDT: 250_000,
+  BTC: 2.5,
+  ETH: 75,
+  SOL: 2_000,
+  TON: 150_000,
+  TRX: 2_500_000,
+  BLINKW: 2_500,
+  ZALP: 1_000
 };
 
 export const CURRENCY_PRIORITY = [
@@ -33,6 +46,7 @@ export const CURRENCY_PRIORITY = [
   "TON",
   "TRX",
   "BLINKW",
+  "ZALP"
 ];
 
 export function sortByPriority(list) {

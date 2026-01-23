@@ -2,6 +2,7 @@ console.log("BlinkWallet loaded");
 
 /* ===== IMPORTS ===== */
 import { state } from "./state.js";
+import { hideDwsBalances } from "./Assets/assets.js";
 
 import { initHome } from "./Home/home.js";
 import { initAssets } from "./Assets/assets.js";
@@ -16,7 +17,7 @@ async function loadRates() {
   const res = await fetch("./Backend/rates.json");
   state.rates = await res.json();
 
-  // IMPORTANT: всі валюти існують навіть з 0 балансом
+  // ensure all currencies exist in balances
   for (const k in state.rates) {
     if (!(k in state.balances)) {
       state.balances[k] = 0;
@@ -28,7 +29,6 @@ async function loadRates() {
 function initTabs() {
   document.querySelectorAll(".nav-item").forEach(btn => {
     btn.onclick = () => {
-      // 🔒 блокуємо тільки коли overlay реально відкритий
       if (overlayOpen) return;
 
       document.querySelectorAll(".nav-item")
@@ -42,8 +42,19 @@ function initTabs() {
   });
 }
 
-/* ===== OVERLAY CONTROL ===== */
-export function openOverlay(panelId) {
+/* =========================================================
+   OVERLAY CONTROL — SINGLE SOURCE OF TRUTH
+   ========================================================= */
+
+export function openOverlay(panelId, options = {}) {
+  const {
+    showBack = true,
+    showNav = false
+  } = options;
+
+  // 🔥 чистимо будь-який попередній DWS-контекст
+  hideDwsBalances();
+
   overlayOpen = true;
 
   // hide tabs
@@ -55,11 +66,19 @@ export function openOverlay(panelId) {
     .forEach(p => p.classList.add("hidden"));
 
   // show target panel
-  document.getElementById(panelId).classList.remove("hidden");
+  const panel = document.getElementById(panelId);
+  if (panel) panel.classList.remove("hidden");
 
-  // UI
-  document.getElementById("bottom-nav").classList.add("hidden");
-  document.getElementById("back-btn").classList.remove("hidden");
+  const backBtn = document.getElementById("back-btn");
+  const bottomNav = document.getElementById("bottom-nav");
+
+  // BACK
+  if (showBack) backBtn.classList.remove("hidden");
+  else backBtn.classList.add("hidden");
+
+  // NAV (тільки через classList, НЕ display)
+  if (showNav) bottomNav.classList.remove("hidden");
+  else bottomNav.classList.add("hidden");
 }
 
 export function closeOverlay() {
@@ -69,17 +88,34 @@ export function closeOverlay() {
   document.querySelectorAll(".panel")
     .forEach(p => p.classList.add("hidden"));
 
-  // restore UI
-  document.getElementById("bottom-nav").classList.remove("hidden");
-  document.getElementById("back-btn").classList.add("hidden");
+  hideDwsBalances();
+
+  const bottomNav = document.getElementById("bottom-nav");
+  const backBtn = document.getElementById("back-btn");
+
+  // ⛔ НЕ показуємо nav якщо success ще активний
+  const successPanel = document.getElementById("panel-success");
+  const successVisible =
+    successPanel && !successPanel.classList.contains("hidden");
+
+  if (!successVisible) {
+    if (bottomNav) {
+      bottomNav.classList.remove("hidden");
+      bottomNav.style.display = ""; // 🔥 скидання після deposit
+    }
+  }
+
+  if (backBtn) backBtn.classList.add("hidden");
 
   // return to Assets tab
   document.querySelectorAll(".tab")
     .forEach(t => t.classList.remove("active"));
+
   document.getElementById("assets").classList.add("active");
 
   document.querySelectorAll(".nav-item")
     .forEach(b => b.classList.remove("active"));
+
   document.querySelector('[data-tab="assets"]')
     .classList.add("active");
 }

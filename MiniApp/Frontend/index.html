@@ -3,22 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <title>BlinkWallet</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="./style.css" />
 </head>
+
 <body>
 
-<!-- HEADER -->
 <header class="top-bar">
   <button id="back-btn" class="hidden">← Back</button>
-  <h1>BlinkWallet</h1>
+
+  <div class="brand">
+    <img src="./logo.svg" class="brand-logo-img" alt="BlinkWallet" />
+    <span class="brand-text">BlinkWallet</span>
+  </div>
 </header>
 
-<!-- MAIN CONTENT -->
 <main>
 
   <!-- HOME -->
   <section id="home" class="tab active">
-    <h2>Welcome 👋</h2>
+    <h2 class="welcome">Nice to see you, 👋</h2>
     <p id="username"></p>
 
     <h3>Market prices</h3>
@@ -27,120 +30,150 @@
 
   <!-- ASSETS -->
   <section id="assets" class="tab">
-    <h2>Your Assets</h2>
+    <h2 class="tab-name">Your Assets</h2>
+    <h3 class="sub-tab">Total value:</h3>
 
     <p>
-      <b>Total value:</b>
       <span id="total-usd">$0.00</span>
     </p>
-
-    <ul id="assets-list"></ul>
 
     <div class="asset-actions">
       <button id="open-deposit">Deposit</button>
       <button id="open-withdraw">Withdraw</button>
       <button id="open-swap">Swap</button>
     </div>
+
+    <ul id="assets-list"></ul>
   </section>
 
   <!-- HISTORY -->
   <section id="history" class="tab">
-    <h2>History</h2>
+    <h2 class="sub-tab">History:</h2>
     <ul id="history-list"></ul>
   </section>
 
   <!-- SETTINGS -->
   <section id="settings" class="tab">
-    <h2>Settings</h2>
+    <h2 class="sub-tab">Settings</h2>
     <p>Account settings will be here.</p>
   </section>
 
-  <!-- ===== OVERLAY PANELS ===== -->
+  <!-- ===== OVERLAYS ===== -->
 
   <!-- DEPOSIT -->
   <section id="panel-deposit" class="panel hidden">
-  <h3>Deposit</h3>
+    <h3>Deposit</h3>
 
-  <div class="swap-row">
-    <input
-      id="deposit-amount"
-      type="number"
-      placeholder="Amount"
-    />
-    <select id="deposit-currency"></select>
-  </div>
+    <div class="swap-row">
+      <input
+        id="deposit-amount"
+        type="number"
+        inputmode="decimal"
+        placeholder="Amount"
+      />
+      <select id="deposit-currency"></select>
+    </div>
 
-  <p id="deposit-error" class="error"></p>
+    <p id="deposit-error" class="error"></p>
 
-  <div class="swap-actions">
-    <button id="confirm-deposit">Confirm</button>
-  </div>
-</section>
-
+    <div class="swap-actions">
+      <button id="confirm-deposit">Confirm</button>
+    </div>
+  </section>
 
   <!-- WITHDRAW -->
   <section id="panel-withdraw" class="panel hidden">
-  <h3>Withdraw</h3>
+    <h3>Withdraw</h3>
 
-  <div class="swap-row">
-    <input
-      id="withdraw-amount"
-      type="number"
-      placeholder="Amount"
-    />
-    <select id="withdraw-currency"></select>
-  </div>
+    <div class="swap-row">
+      <input
+        id="withdraw-amount"
+        type="number"
+        inputmode="decimal"
+        placeholder="Amount"
+      />
+      <select id="withdraw-currency"></select>
+    </div>
 
-  <p id="withdraw-error" class="error"></p>
+    <p id="withdraw-error" class="error"></p>
 
-  <div class="swap-actions">
-    <button id="withdraw-max">MAX</button>
-    <button id="confirm-withdraw">Confirm</button>
-  </div>
-</section>
-
+    <div class="swap-actions">
+      <button id="withdraw-max">MAX</button>
+      <button id="confirm-withdraw">Confirm</button>
+    </div>
+  </section>
 
   <!-- SWAP -->
-<section id="panel-swap" class="panel hidden">
-  <h3>Swap</h3>
+  <section id="panel-swap" class="panel hidden">
+    <h3>Swap</h3>
 
-  <div class="swap-row">
-    <input id="swap-from-amount" placeholder="You pay" />
-    <select id="swap-from-currency"></select>
+    <div class="swap-row">
+      <input
+        id="swap-from-amount"
+        type="number"
+        inputmode="decimal"
+        placeholder="You pay"
+      />
+      <select id="swap-from-currency"></select>
+    </div>
+
+    <div class="swap-row">
+      <input
+        id="swap-to-amount"
+        type="number"
+        inputmode="decimal"
+        placeholder="You receive"
+      />
+      <select id="swap-to-currency"></select>
+    </div>
+
+    <p id="swap-error" class="error"></p>
+
+    <div class="swap-actions">
+      <button id="swap-max">MAX</button>
+      <button id="confirm-swap">Confirm</button>
+    </div>
+  </section>
+
+  <!-- DWS BALANCES (SHARED, ONE INSTANCE) -->
+  <div id="dws-balances" class="dws-balances hidden">
+    <div class="dws-balances-title">Your balances</div>
+    <div id="dws-balances-list"></div>
   </div>
 
-  <div class="swap-row">
-    <input id="swap-to-amount" placeholder="You receive" />
-    <select id="swap-to-currency"></select>
+<section id="panel-success" class="panel hidden panel-success">
+
+  <!-- CARD -->
+  <div class="success-wrapper">
+    <img
+      src="./Assets/DWS/Success/success.svg"
+      alt="Success"
+      class="success-icon"
+    />
+
+    <h3 class="success-title">Transaction successful</h3>
+    <div id="success-summary" class="success-summary"></div>
+    <div id="success-balances" class="success-balances"></div>
   </div>
 
-  <p id="swap-error" class="error"></p>
-
-  <div class="swap-actions">
-    <button id="swap-max">MAX</button>
-    <button id="confirm-swap">Confirm</button>
+  <!-- ACTION -->
+  <div class="success-actions">
+    <button id="success-close" class="btn-done">Done</button>
   </div>
+
 </section>
 
 
-<!-- BOTTOM NAV -->
+
+</main>
+
 <nav id="bottom-nav" class="bottom-nav">
-  <button class="nav-item active" data-tab="home">
-    🏠 <span>Home</span>
-  </button>
-  <button class="nav-item" data-tab="assets">
-    💼 <span>Assets</span>
-  </button>
-  <button class="nav-item" data-tab="history">
-    🕘 <span>History</span>
-  </button>
-  <button class="nav-item" data-tab="settings">
-    ⚙️ <span>Settings</span>
-  </button>
+  <button class="nav-item active" data-tab="home">🏠 <span>Home</span></button>
+  <button class="nav-item" data-tab="assets">💼 <span>Assets</span></button>
+  <button class="nav-item" data-tab="history">🕘 <span>History</span></button>
+  <button class="nav-item" data-tab="settings">⚙️ <span>Settings</span></button>
 </nav>
 
-<!-- JS -->
 <script type="module" src="./app.js"></script>
-
 </body>
 </html>

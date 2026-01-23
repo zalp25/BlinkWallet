@@ -1,10 +1,31 @@
-import { state, MIN_AMOUNTS } from "../../state.js";
-import { renderAssets } from "../assets.js";
+import {
+  state,
+  MIN_AMOUNTS,
+  MAX_AMOUNTS,
+  sortByPriority
+} from "../../state.js";
+
+import {
+  renderAssets,
+  showDwsBalances,
+  hideDwsBalances
+} from "../assets.js";
+
 import { addHistory } from "../../History/history.js";
-import { openOverlay, closeOverlay } from "../../app.js";
+import { openOverlay } from "../../app.js";
+import { showSuccess } from "./Success/success.js";
 
 export function openWithdraw() {
   openOverlay("panel-withdraw");
+
+  // 🔥 глобальний UI — як у deposit / swap / success
+  const bottomNav = document.getElementById("bottom-nav");
+  const backBtn = document.getElementById("back-btn");
+
+  if (bottomNav) bottomNav.style.display = "none";
+  if (backBtn) backBtn.style.display = "";
+
+  showDwsBalances();
   initWithdraw();
 }
 
@@ -18,39 +39,110 @@ function initWithdraw() {
   input.value = "";
   error.textContent = "";
   select.innerHTML = "";
+  confirmBtn.disabled = true;
 
-  const available = Object.keys(state.balances).filter(k => state.balances[k] > 0);
+  // тільки валюти з балансом
+  const available = sortByPriority(
+    Object.keys(state.balances).filter(k => state.balances[k] > 0)
+  );
+
   if (!available.length) {
     select.append(new Option("No assets", ""));
-    confirmBtn.disabled = true;
+    setError("Insufficient balance");
+    select.disabled = true;
+    maxBtn.disabled = true;
     return;
   }
 
-  for (const k of available) {
-    select.append(new Option(k, k));
+  for (const cur of available) {
+    select.append(new Option(cur, cur));
   }
 
+  input.oninput = () => {
+    sanitize(input);
+    validate();
+  };
+
+  select.onchange = () => {
+    input.value = "";
+    clearError();
+    confirmBtn.disabled = true;
+  };
+
   maxBtn.onclick = () => {
-    input.value = state.balances[select.value];
+    const cur = select.value;
+    input.value = Math.min(
+      state.balances[cur],
+      MAX_AMOUNTS[cur]
+    );
+    validate();
   };
 
   confirmBtn.onclick = () => {
+    if (!validate()) return;
+
     const cur = select.value;
-    const val = Number(input.value);
+    const amount = Number(input.value);
 
-    if (val < MIN_AMOUNTS[cur]) {
-      error.textContent = `Minimum: ${MIN_AMOUNTS[cur]} ${cur}`;
-      return;
-    }
+    state.balances[cur] -= amount;
 
-    if (val > state.balances[cur]) {
-      error.textContent = "Insufficient balance";
-      return;
-    }
-
-    state.balances[cur] -= val;
-    addHistory(`Withdraw ${val} ${cur}`);
+    addHistory(`Withdraw ${amount} ${cur}`);
     renderAssets();
-    closeOverlay();
+
+    hideDwsBalances();
+
+    // ✅ ФІНАЛЬНИЙ ЕКРАН
+    showSuccess({
+      summary: `Withdraw ${amount} ${cur}`
+    });
   };
+
+  function validate() {
+    const cur = select.value;
+    const amount = Number(input.value);
+
+    clearError();
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+      setError("Invalid amount");
+      return false;
+    }
+
+    if (amount < MIN_AMOUNTS[cur]) {
+      setError(`Minimum: ${MIN_AMOUNTS[cur]} ${cur}`);
+      return false;
+    }
+
+    if (amount > MAX_AMOUNTS[cur]) {
+      setError(`Maximum per transaction: ${MAX_AMOUNTS[cur]} ${cur}`);
+      return false;
+    }
+
+    if (amount > state.balances[cur]) {
+      setError("Insufficient balance");
+      return false;
+    }
+
+    confirmBtn.disabled = false;
+    return true;
+  }
+
+  function setError(msg) {
+    error.textContent = msg;
+    input.classList.add("input-error");
+    confirmBtn.disabled = true;
+  }
+
+  function clearError() {
+    error.textContent = "";
+    input.classList.remove("input-error");
+  }
+}
+
+function sanitize(input) {
+  input.value = input.value.replace(/[^0-9.]/g, "");
+  const parts = input.value.split(".");
+  if (parts.length > 2) {
+    input.value = parts[0] + "." + parts.slice(1).join("");
+  }
 }
