@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8" />
   <title>BlinkWallet</title>
   <link rel="stylesheet" href="./style.css" />
@@ -32,11 +31,22 @@
   <!-- ASSETS -->
   <section id="assets" class="tab">
     <h2 class="tab-name">Your Assets</h2>
-    <h3 class="sub-tab">Total value:</h3>
 
-    <p>
-      <span id="total-usd">$0.00</span>
-    </p>
+    <!-- ASSETS SUMMARY PANEL -->
+    <div class="panel assets-summary">
+
+      <h3 class="sub-tab">Total value:</h3>
+
+      <p>
+        <span id="total-usd">$0.00</span>
+      </p>
+
+      <p class="roi-line">
+        <span class="roi-label">Todays ROI:</span>
+        <span id="roi-value" class="roi-neutral">-.--%</span>
+      </p>
+
+    </div>
 
     <div class="asset-actions">
       <button id="open-deposit">Deposit</button>
@@ -59,19 +69,14 @@
     <p>Account settings will be here.</p>
   </section>
 
-  <!-- ===== OVERLAYS ===== -->
+  <!-- OVERLAYS -->
 
   <!-- DEPOSIT -->
   <section id="panel-deposit" class="panel hidden">
     <h3>Deposit</h3>
 
     <div class="swap-row">
-      <input
-        id="deposit-amount"
-        type="number"
-        inputmode="decimal"
-        placeholder="Amount"
-      />
+      <input id="deposit-amount" type="number" inputmode="decimal" placeholder="Amount" />
       <select id="deposit-currency"></select>
     </div>
 
@@ -87,12 +92,7 @@
     <h3>Withdraw</h3>
 
     <div class="swap-row">
-      <input
-        id="withdraw-amount"
-        type="number"
-        inputmode="decimal"
-        placeholder="Amount"
-      />
+      <input id="withdraw-amount" type="number" inputmode="decimal" placeholder="Amount" />
       <select id="withdraw-currency"></select>
     </div>
 
@@ -109,22 +109,12 @@
     <h3>Swap</h3>
 
     <div class="swap-row">
-      <input
-        id="swap-from-amount"
-        type="number"
-        inputmode="decimal"
-        placeholder="You pay"
-      />
+      <input id="swap-from-amount" type="number" inputmode="decimal" placeholder="You pay" />
       <select id="swap-from-currency"></select>
     </div>
 
     <div class="swap-row">
-      <input
-        id="swap-to-amount"
-        type="number"
-        inputmode="decimal"
-        placeholder="You receive"
-      />
+      <input id="swap-to-amount" type="number" inputmode="decimal" placeholder="You receive" />
       <select id="swap-to-currency"></select>
     </div>
 
@@ -136,35 +126,24 @@
     </div>
   </section>
 
-  <!-- DWS BALANCES (SHARED, ONE INSTANCE) -->
+  <!-- DWS BALANCES -->
   <div id="dws-balances" class="dws-balances hidden">
-    <div class="dws-balances-title">Your balances:</div>
+    <div class="dws-balances-title">Your balances</div>
     <div id="dws-balances-list"></div>
   </div>
 
-<section id="panel-success" class="panel hidden panel-success">
+  <!-- SUCCESS -->
+  <section id="panel-success" class="panel hidden panel-success">
+    <div class="success-wrapper">
+      <img src="./Assets/DWS/Success/success.svg" class="success-icon" alt="Success" />
+      <h3 class="success-title">Transaction successful</h3>
+      <div id="success-summary" class="success-summary"></div>
+    </div>
 
-  <!-- CARD -->
-  <div class="success-wrapper">
-    <img
-      src="./Assets/DWS/Success/success.svg"
-      alt="Success"
-      class="success-icon"
-    />
-
-    <h3 class="success-title">Transaction successful</h3>
-    <div id="success-summary" class="success-summary"></div>
-    <div id="success-balances" class="success-balances"></div>
-  </div>
-
-  <!-- ACTION -->
-  <div class="success-actions">
-    <button id="success-close" class="btn-done">Done</button>
-  </div>
-
-</section>
-
-
+    <div class="success-actions">
+      <button id="success-close" class="btn-done">Done</button>
+    </div>
+  </section>
 
 </main>
 

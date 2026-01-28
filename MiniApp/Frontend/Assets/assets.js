@@ -4,7 +4,7 @@ import { openWithdraw } from "./DWS/withdraw.js";
 import { openSwap } from "./DWS/swap.js";
 
 /* =========================================================
-   ASSETS TAB
+   INIT
    ========================================================= */
 
 export function initAssets() {
@@ -12,11 +12,32 @@ export function initAssets() {
   document.getElementById("open-withdraw").onclick = openWithdraw;
   document.getElementById("open-swap").onclick = openSwap;
 
+  showTotalValue();
   renderAssets();
 }
 
+/* =========================================================
+   TOTAL VALUE (SINGLE RESPONSIBILITY)
+   ========================================================= */
+
+export function showTotalValue() {
+  const summary = document.querySelector(".assets-summary");
+  if (summary) summary.classList.remove("hidden");
+}
+
+export function hideTotalValue() {
+  const summary = document.querySelector(".assets-summary");
+  if (summary) summary.classList.add("hidden");
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
 export function renderAssets() {
   const ul = document.getElementById("assets-list");
+  if (!ul) return;
+
   ul.innerHTML = "";
 
   let total = 0;
@@ -34,17 +55,14 @@ export function renderAssets() {
     ul.appendChild(li);
   }
 
-  document.getElementById("total-usd").textContent =
-    `$${total.toFixed(2)}`;
+  const totalEl = document.getElementById("total-usd");
+  if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
 }
 
 /* =========================================================
-   DWS BALANCES (Deposit / Withdraw / Swap)
+   DWS BALANCES (ONLY ITSELF)
    ========================================================= */
 
-/**
- * Show balances snapshot under D/W/S panels
- */
 export function showDwsBalances() {
   const wrapper = document.getElementById("dws-balances");
   const list = document.getElementById("dws-balances-list");
@@ -62,23 +80,15 @@ export function showDwsBalances() {
     const usd = (amount * rate).toFixed(2);
 
     const row = document.createElement("div");
-    row.className = "dws-balances-row";
     row.textContent = `${cur}: ${amount} ≈ $${usd}`;
-
     list.appendChild(row);
   }
 }
 
-/**
- * Hide balances snapshot when overlay is closed
- */
 export function hideDwsBalances() {
   const wrapper = document.getElementById("dws-balances");
-  if (!wrapper) return;
+  if (wrapper) wrapper.classList.add("hidden");
 
-  wrapper.classList.add("hidden");
-
-  // ❗ ВАЖЛИВО: очищаємо список, щоб не було "залипання"
   const list = document.getElementById("dws-balances-list");
   if (list) list.innerHTML = "";
 }

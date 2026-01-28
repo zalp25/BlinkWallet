@@ -17,17 +17,10 @@ import { showSuccess } from "./Success/success.js";
 
 export function openWithdraw() {
   openOverlay("panel-withdraw");
-
-  // 🔥 глобальний UI — як у deposit / swap / success
-  const bottomNav = document.getElementById("bottom-nav");
-  const backBtn = document.getElementById("back-btn");
-
-  if (bottomNav) bottomNav.style.display = "none";
-  if (backBtn) backBtn.style.display = "";
-
   showDwsBalances();
   initWithdraw();
 }
+
 
 function initWithdraw() {
   const input = document.getElementById("withdraw-amount");
@@ -91,7 +84,6 @@ function initWithdraw() {
 
     hideDwsBalances();
 
-    // ✅ ФІНАЛЬНИЙ ЕКРАН
     showSuccess({
       summary: `Withdraw ${amount} ${cur}`
     });

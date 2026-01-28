@@ -20,17 +20,10 @@ let activeField = "from";
 
 export function openSwap() {
   openOverlay("panel-swap");
-
-  // 🔥 глобальний UI — ЯК У DEPOSIT
-  const bottomNav = document.getElementById("bottom-nav");
-  const backBtn = document.getElementById("back-btn");
-
-  if (bottomNav) bottomNav.style.display = "none";
-  if (backBtn) backBtn.style.display = "";
-
   showDwsBalances();
   initSwap();
 }
+
 
 function initSwap() {
   const fromInput = document.getElementById("swap-from-amount");
@@ -49,12 +42,10 @@ function initSwap() {
   fromSelect.innerHTML = "";
   toSelect.innerHTML = "";
 
-  // TO — всі валюти
   for (const k of sortByPriority(Object.keys(state.rates))) {
     toSelect.append(new Option(k, k));
   }
 
-  // FROM — тільки з балансом
   const available = sortByPriority(
     Object.keys(state.balances).filter(k => state.balances[k] > 0)
   );

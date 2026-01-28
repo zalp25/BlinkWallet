@@ -24,7 +24,7 @@ export const MIN_AMOUNTS = {
   TON: 3.5,
   TRX: 17,
   BTC: 0.00006,
-  ZALP: 10
+  ZALP: 0.025
 };
 
 export const MAX_AMOUNTS = {
