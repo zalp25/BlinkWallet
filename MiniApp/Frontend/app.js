@@ -23,6 +23,18 @@ async function loadRates() {
   }
 }
 
+function applyTelegramUser() {
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  if (!tgUser) return;
+
+  const name = (tgUser.first_name ?? "").trim();
+
+  if (name) state.username = name;
+
+  const input = document.getElementById("settings-name");
+  if (input && name) input.value = name;
+}
+
 // Global UI helpers
 
 function showNav() {
@@ -154,6 +166,7 @@ export function closeOverlay() {
 
 document.addEventListener("DOMContentLoaded", async () => {
   await loadRates();
+  applyTelegramUser();
 
   initHome();
   initAssets();

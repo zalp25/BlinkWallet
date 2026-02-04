@@ -21,7 +21,7 @@
 
   <!-- Home -->
   <section id="home" class="tab active">
-    <h2 class="welcome">Nice to see you, 👋</h2>
+    <h2 class="welcome">Nice to see you, <img src="./Icons/wave.svg" class="emoji-icon" alt="" /></h2>
     <p id="username"></p>
 
     <div class="panel home-summary">
@@ -79,7 +79,7 @@
 
   <!-- Settings -->
   <section id="settings" class="tab">
-    <h2 class="sub-tab">Settings</h2>
+    <h2 class="sub-tab">Settings:</h2>
     <div class="panel settings-panel">
       <label class="settings-label" for="settings-name">Display name</label>
       <div class="settings-row">
@@ -169,12 +169,25 @@
 </main>
 
 <nav id="bottom-nav" class="bottom-nav">
-  <button class="nav-item active" data-tab="home">🏠 <span>Home</span></button>
-  <button class="nav-item" data-tab="assets">💼 <span>Assets</span></button>
-  <button class="nav-item" data-tab="history">🕘 <span>History</span></button>
-  <button class="nav-item" data-tab="settings">⚙️ <span>Settings</span></button>
+  <button class="nav-item active" data-tab="home">
+    <img src="./Icons/home.svg" class="nav-icon" alt="" />
+    <span>Home</span>
+  </button>
+  <button class="nav-item" data-tab="assets">
+    <img src="./Icons/assets.svg" class="nav-icon" alt="" />
+    <span>Assets</span>
+  </button>
+  <button class="nav-item" data-tab="history">
+    <img src="./Icons/history.svg" class="nav-icon" alt="" />
+    <span>History</span>
+  </button>
+  <button class="nav-item" data-tab="settings">
+    <img src="./Icons/settings.svg" class="nav-icon" alt="" />
+    <span>Settings</span>
+  </button>
 </nav>
 
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script type="module" src="./app.js"></script>
 </body>
 </html>
