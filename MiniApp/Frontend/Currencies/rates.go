@@ -35,8 +35,7 @@ func main() {
 func fetchRates() (map[string]float64, error) {
 	rates := map[string]float64{
 		"USDT":   1.00,
-		"BLINKW": 100.00,
-		"ZALP":   228,
+		"BLINK": 100.00,
 	}
 
 	url := "https://api.coingecko.com/api/v3/simple/price" +

@@ -1,5 +1,6 @@
 import {
   state,
+  DECIMALS,
   MIN_AMOUNTS,
   MAX_AMOUNTS,
   sortByPriority
@@ -21,7 +22,6 @@ export function openWithdraw() {
   initWithdraw();
 }
 
-
 function initWithdraw() {
   const input = document.getElementById("withdraw-amount");
   const select = document.getElementById("withdraw-currency");
@@ -34,7 +34,6 @@ function initWithdraw() {
   select.innerHTML = "";
   confirmBtn.disabled = true;
 
-  // тільки валюти з балансом
   const available = sortByPriority(
     Object.keys(state.balances).filter(k => state.balances[k] > 0)
   );
@@ -52,7 +51,7 @@ function initWithdraw() {
   }
 
   input.oninput = () => {
-    sanitize(input);
+    sanitize(input, DECIMALS[select.value]);
     validate();
   };
 
@@ -64,10 +63,7 @@ function initWithdraw() {
 
   maxBtn.onclick = () => {
     const cur = select.value;
-    input.value = Math.min(
-      state.balances[cur],
-      MAX_AMOUNTS[cur]
-    );
+    input.value = Math.min(state.balances[cur], MAX_AMOUNTS[cur]);
     validate();
   };
 
@@ -81,7 +77,6 @@ function initWithdraw() {
 
     addHistory(`Withdraw ${amount} ${cur}`);
     renderAssets();
-
     hideDwsBalances();
 
     showSuccess({
@@ -131,10 +126,37 @@ function initWithdraw() {
   }
 }
 
-function sanitize(input) {
-  input.value = input.value.replace(/[^0-9.]/g, "");
-  const parts = input.value.split(".");
-  if (parts.length > 2) {
-    input.value = parts[0] + "." + parts.slice(1).join("");
-  }
+function sanitize(input, maxDecimals) {
+  const raw = input.value;
+  const caret = input.selectionStart ?? raw.length;
+  const rawBefore = raw.slice(0, caret);
+
+  const sanitizeValue = value => {
+    const cleaned = value.replace(/[^0-9.]/g, "");
+    const parts = cleaned.split(".");
+    let next = cleaned;
+
+    if (parts.length > 2) {
+      next = parts[0] + "." + parts.slice(1).join("");
+    }
+
+    if (Number.isFinite(maxDecimals) && maxDecimals >= 0) {
+      const dotIndex = next.indexOf(".");
+      if (dotIndex !== -1) {
+        const head = next.slice(0, dotIndex);
+        const tail = next.slice(dotIndex + 1, dotIndex + 1 + maxDecimals);
+        next = head + "." + tail;
+      }
+    }
+
+    return next;
+  };
+
+  const nextValue = sanitizeValue(raw);
+  const nextBefore = sanitizeValue(rawBefore);
+
+  input.value = nextValue;
+  const nextCaret = Math.min(nextBefore.length, nextValue.length);
+  input.setSelectionRange(nextCaret, nextCaret);
 }
+

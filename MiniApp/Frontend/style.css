@@ -1,6 +1,4 @@
-/* =========================================================
-   DESIGN TOKENS
-   ========================================================= */
+/* Design tokens */
 :root {
   --color-bg-root: #121212;
   --color-bg-root-alt: #1e1e1e;
@@ -16,6 +14,10 @@
 
   --color-border-soft: rgba(255, 255, 255, 0.14);
   --color-border-inset: rgba(255, 255, 255, 0.1);
+
+  --card-bg-a: rgba(61, 61, 61, 0.18);
+  --card-bg-b: rgba(59, 59, 59, 0.1);
+  --card-border: rgba(255, 255, 255, 0.12);
 
   --shadow-lg: 0 0.75rem 2rem rgba(0, 0, 0, 0.45);
   --shadow-md: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.233);
@@ -36,9 +38,7 @@
     "Helvetica Neue", sans-serif;
 }
 
-/* =========================================================
-   GLOBAL SCALE
-   ========================================================= */
+/* Base */
 html {
   min-height: 100%;
   font-size: 1.25rem;
@@ -51,7 +51,7 @@ html {
 
 body {
   margin: 0;
-  padding: 1.25rem;
+  padding: 0.625rem;
   font-family: var(--font-base);
   font-size: 1rem;
   color: var(--color-text-main);
@@ -70,9 +70,7 @@ body {
   }
 }
 
-/* =========================================================
-   TYPO
-   ========================================================= */
+/* Typography */
 h1, h2, h3 {
   margin: 0 0 var(--space-md);
   font-weight: 600;
@@ -81,7 +79,11 @@ h1, h2, h3 {
 
 h1 { font-size: 1.25rem; }
 h2 { font-size: 1.125rem; }
-h3 { font-size: 1rem; }
+h3 { font-size: 1.5rem; }
+
+#home h3 {
+  padding-left: 0.6rem;
+}
 
 p {
   margin: var(--space-xs) 0;
@@ -95,6 +97,16 @@ ul {
   margin: var(--space-sm) 0;
 }
 
+.currency-list {
+  list-style: none;
+  padding: 0 0.18rem 0 0.05rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
 .tab-name {
   font-size: 1rem;
   color: #a6a6a687;
@@ -102,17 +114,19 @@ ul {
 }
 
 h2.welcome {
-  font-size: 1.7rem;
+  font-size: 1.2rem;
   font-weight: 400;
   margin-bottom: -0.5rem;
   color: rgb(215, 215, 215);
+  padding-left: 0.6rem;
 }
 
 #username {
-  font-size: 2rem;
+  font-size: 1.6rem;
   font-weight: 650;
   color: var(--color-text-main);
-  margin-bottom: 1rem;
+  margin-bottom: 0.4rem;
+  padding-left: 0.6rem;
 }
 
 .sub-tab {
@@ -127,9 +141,7 @@ h2.welcome {
   letter-spacing: -0.02em;
 }
 
-/* =========================================================
-   ROI
-   ========================================================= */
+/* ROI */
 .roi-line {
   margin-top: -0.4rem;
   font-size: 0.95rem;
@@ -158,14 +170,12 @@ h2.welcome {
   color: var(--color-text-muted);
 }
 
-/* =========================================================
-   BRAND / HEADER
-   ========================================================= */
+/* Header */
 .top-bar {
   display: flex;
   align-items: center;
   gap: var(--space-md);
-  margin-bottom: var(--space-lg);
+  margin-bottom: 0.6rem;
 }
 
 .brand {
@@ -184,9 +194,7 @@ h2.welcome {
   font-weight: 700;
 }
 
-/* =========================================================
-   CONTROLS
-   ========================================================= */
+/* Controls */
 button {
   appearance: none;
   border: none;
@@ -271,9 +279,7 @@ select option {
   width: 100%;
 }
 
-/* =========================================================
-   ERRORS
-   ========================================================= */
+/* Errors */
 .error {
   font-size: 0.8125rem;
   color: var(--color-text-error);
@@ -285,9 +291,7 @@ input.input-error {
   box-shadow: 0 0 0.5rem rgba(255, 77, 79, 0.35);
 }
 
-/* =========================================================
-   PANELS / TABS
-   ========================================================= */
+/* Panels */
 .tab {
   display: none;
   animation: fadeEffect 0.2s ease-out;
@@ -307,7 +311,7 @@ input.input-error {
 }
 
 .panel {
-  margin-top: var(--space-md);
+  margin-top: var(--space-xs);
   padding: var(--space-lg);
 
   background: linear-gradient(
@@ -327,11 +331,44 @@ input.input-error {
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-/* =========================================================
-   ASSETS
-   ========================================================= */
+/* Settings */
+.settings-panel {
+  margin-top: 1rem;
+  padding: 0.8rem;
+}
+
+.settings-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 0.4rem;
+  padding-left: 0.4rem;
+}
+
+.settings-error {
+  margin-top: 0.4rem;
+}
+
+.settings-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.settings-row input {
+  flex: 1;
+}
+
+.settings-row button {
+  min-height: 2.6rem;
+  padding: 0 1rem;
+}
+
+/* Home / Assets */
 .assets-summary {
   margin-top: var(--space-md);
+  padding: 1.1rem 1.1rem;
 }
 
 .asset-actions {
@@ -344,9 +381,202 @@ input.input-error {
   flex: 1;
 }
 
-/* =========================================================
-   SWAP / DEPOSIT / WITHDRAW
-   ========================================================= */
+.home-summary {
+  margin: 0.1rem 0 0.6rem;
+  padding: 0.45rem 0.8rem 0.45rem 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  border-radius: 1.4rem;
+  margin-left: 0;
+}
+
+.home-summary-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.home-summary-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.home-summary-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.home-summary-roi {
+  display: flex;
+  gap: 0.12rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.home-summary-more {
+  min-height: 2.65rem;
+  padding: 0 1.25rem;
+  border-radius: 1.1rem;
+}
+
+.currency-card {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.6rem;
+  border-radius: 1.35rem;
+  border: 1px solid var(--card-border);
+  background: linear-gradient(
+    120deg,
+    var(--card-bg-a),
+    var(--card-bg-b)
+  );
+  box-shadow:
+    0 0.8rem 1.6rem rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.currency-left {
+  display: flex;
+  align-items: center;
+}
+
+.currency-icon-wrap {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.25);
+  flex-shrink: 0;
+  overflow: hidden;
+  font-weight: 700;
+}
+
+.currency-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.currency-icon-fallback {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.2rem;
+}
+
+.currency-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.02rem;
+}
+
+.currency-code {
+  font-size: 1.1rem;
+  color: #d7d7d7;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+.currency-sub {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 400;
+}
+
+.currency-right .currency-sub {
+  font-size: 0.7rem;
+}
+
+.currency-right {
+  margin-left: auto;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+
+#assets-list .currency-right {
+  padding-right: 0.35rem;
+}
+
+.currency-right-row {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.currency-value {
+  font-size: 1rem;
+  color: #cdcdcd;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.currency-badge {
+  align-self: flex-end;
+  height: 2rem;
+  min-width: 2.4rem;
+  padding: 0 0.6rem;
+  border-radius: 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: #25b048;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* History */
+.history-list {
+  margin-top: 0.85rem;
+}
+
+.history-empty {
+  list-style: none;
+  padding: 0.8rem 0.6rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+.history-card {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 1.2rem;
+  border: 1px solid var(--card-border);
+  background: linear-gradient(
+    120deg,
+    var(--card-bg-a),
+    var(--card-bg-b)
+  );
+  box-shadow:
+    0 0.7rem 1.4rem rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.history-time {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.history-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e6e6e6;
+}
+
+/* Swap / Deposit / Withdraw */
 .swap-row {
   display: flex;
   gap: var(--space-sm);
@@ -385,9 +615,7 @@ input.input-error {
 
 
 
-/* =========================================================
-   DWS BALANCES
-   ========================================================= */
+/* DWS balances */
 .dws-balances {
   color: rgba(255, 255, 255, 0.36);
   margin-top: 0.8rem;
@@ -402,9 +630,7 @@ input.input-error {
   margin-bottom: 0.4rem;
 }
 
-/* =========================================================
-   SUCCESS
-   ========================================================= */
+/* Success */
 .panel-success {
   margin-top: 2rem;
 }
@@ -444,14 +670,12 @@ input.input-error {
   max-width: 16.25rem;
 }
 
-/* =========================================================
-   BOTTOM NAV
-   ========================================================= */
+/* Bottom nav */
 .bottom-nav {
   position: fixed;
   bottom: 1.25rem;
-  left: 1rem;
-  right: 1rem;
+  left: 0.5rem;
+  right: 0.5rem;
 
   max-width: 30rem;
   margin: 0 auto;
@@ -512,3 +736,4 @@ input.input-error {
     var(--shadow-md),
     inset 0 1px 0 rgba(255,255,255,0.07);
 }
+

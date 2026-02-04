@@ -24,7 +24,6 @@ export function openSwap() {
   initSwap();
 }
 
-
 function initSwap() {
   const fromInput = document.getElementById("swap-from-amount");
   const toInput = document.getElementById("swap-to-amount");
@@ -34,49 +33,83 @@ function initSwap() {
   const maxBtn = document.getElementById("swap-max");
   const confirmBtn = document.getElementById("confirm-swap");
 
+  // Reset form state
   fromInput.value = "";
   toInput.value = "";
   error.textContent = "";
   confirmBtn.disabled = true;
 
-  fromSelect.innerHTML = "";
-  toSelect.innerHTML = "";
+  fromSelect.disabled = false;
+  toSelect.disabled = false;
+  maxBtn.disabled = false;
 
-  for (const k of sortByPriority(Object.keys(state.rates))) {
-    toSelect.append(new Option(k, k));
-  }
-
+  const allCurrencies = sortByPriority(
+    Array.from(
+      new Set([
+        ...Object.keys(state.rates),
+        ...Object.keys(state.balances),
+        ...Object.keys(DECIMALS)
+      ])
+    )
+  );
   const available = sortByPriority(
     Object.keys(state.balances).filter(k => state.balances[k] > 0)
   );
 
   if (!available.length) {
     setError("Insufficient balance");
-    fromSelect.append(new Option("No assets", ""));
+    fromSelect.innerHTML = '<option value="">No assets</option>';
     fromSelect.disabled = true;
-    toSelect.disabled = true;
+    toSelect.disabled = false;
     maxBtn.disabled = true;
+    fillSelect(toSelect, allCurrencies);
     return;
   }
-
-  for (const k of available) {
-    fromSelect.append(new Option(k, k));
+  function fillSelect(selectEl, currencies) {
+    selectEl.innerHTML = currencies
+      .map(cur => `<option value="${cur}">${cur}</option>`)
+      .join("");
   }
 
+  fillSelect(fromSelect, available);
+  fillSelect(toSelect, allCurrencies);
+
+  // Keep from/to different
+  function validateSelection() {
+    if (fromSelect.value === toSelect.value) {
+      const otherOption = [...toSelect.options].find(opt => opt.value !== fromSelect.value);
+      if (otherOption) {
+        toSelect.value = otherOption.value;
+      }
+    }
+  }
+  validateSelection();
+
+  // Events
+  fromSelect.onchange = () => {
+    validateSelection();
+    resetInputs();
+  };
+
+  toSelect.onchange = () => {
+    if (toSelect.value === fromSelect.value) {
+      const otherFrom = [...fromSelect.options].find(opt => opt.value !== toSelect.value);
+      if (otherFrom) fromSelect.value = otherFrom.value;
+    }
+    resetInputs();
+  };
+
   fromInput.oninput = () => {
-    sanitize(fromInput);
+    sanitize(fromInput, DECIMALS[fromSelect.value]);
     activeField = "from";
     recalc();
   };
 
   toInput.oninput = () => {
-    sanitize(toInput);
+    sanitize(toInput, DECIMALS[toSelect.value]);
     activeField = "to";
     recalc();
   };
-
-  fromSelect.onchange = resetAndRecalc;
-  toSelect.onchange = resetAndRecalc;
 
   maxBtn.onclick = () => {
     const cur = fromSelect.value;
@@ -87,7 +120,6 @@ function initSwap() {
 
   confirmBtn.onclick = () => {
     if (!validate()) return;
-
     const fromCur = fromSelect.value;
     const toCur = toSelect.value;
     const amount = Number(fromInput.value);
@@ -96,17 +128,14 @@ function initSwap() {
     state.balances[fromCur] -= amount;
     state.balances[toCur] = (state.balances[toCur] ?? 0) + receive;
 
-    addHistory(`Swap ${amount} ${fromCur} → ${receive} ${toCur}`);
+    addHistory(`Swap ${amount} ${fromCur} -> ${receive} ${toCur}`);
     renderAssets();
-
     hideDwsBalances();
-
-    showSuccess({
-      summary: `Swap ${amount} ${fromCur} → ${receive} ${toCur}`
-    });
+    showSuccess({ summary: `Swap ${amount} ${fromCur} -> ${receive} ${toCur}` });
   };
 
-  function resetAndRecalc() {
+  // Helpers
+  function resetInputs() {
     fromInput.value = "";
     toInput.value = "";
     clearError();
@@ -116,52 +145,37 @@ function initSwap() {
   function recalc() {
     const fromCur = fromSelect.value;
     const toCur = toSelect.value;
+    const rateFrom = state.rates[fromCur];
+    const rateTo = state.rates[toCur];
+    const val = activeField === "from" ? Number(fromInput.value) : Number(toInput.value);
 
-    if (!fromCur || !toCur || fromCur === toCur) {
-      setError("Select different currencies");
+    if (!val || val <= 0) {
+      confirmBtn.disabled = true;
       return;
     }
 
-    const rateFrom = state.rates[fromCur];
-    const rateTo = state.rates[toCur];
-
-    const fromVal = Number(fromInput.value);
-    const toVal = Number(toInput.value);
-
-    if (activeField === "from" && Number.isFinite(fromVal)) {
-      toInput.value = ((fromVal * rateFrom) / rateTo)
-        .toFixed(DECIMALS[toCur]);
+    if (activeField === "from") {
+      toInput.value = ((val * rateFrom) / rateTo).toFixed(DECIMALS[toCur]);
+    } else {
+      fromInput.value = ((val * rateTo) / rateFrom).toFixed(DECIMALS[fromCur]);
     }
-
-    if (activeField === "to" && Number.isFinite(toVal)) {
-      fromInput.value = ((toVal * rateTo) / rateFrom)
-        .toFixed(DECIMALS[fromCur]);
-    }
-
     validate();
   }
 
   function validate() {
     const cur = fromSelect.value;
     const amount = Number(fromInput.value);
-
     clearError();
 
-    if (!Number.isFinite(amount) || amount <= 0) {
-      setError("Invalid amount");
-      return false;
-    }
-
+    if (!amount || amount <= 0) return false;
     if (amount < MIN_AMOUNTS[cur]) {
-      setError(`Minimum: ${MIN_AMOUNTS[cur]} ${cur}`);
+      setError(`Min: ${MIN_AMOUNTS[cur]} ${cur}`);
       return false;
     }
-
     if (amount > MAX_AMOUNTS[cur]) {
-      setError(`Maximum per swap: ${MAX_AMOUNTS[cur]} ${cur}`);
+      setError(`Max: ${MAX_AMOUNTS[cur]} ${cur}`);
       return false;
     }
-
     if (amount > state.balances[cur]) {
       setError("Insufficient balance");
       return false;
@@ -183,10 +197,38 @@ function initSwap() {
   }
 }
 
-function sanitize(input) {
-  input.value = input.value.replace(/[^0-9.]/g, "");
-  const parts = input.value.split(".");
-  if (parts.length > 2) {
-    input.value = parts[0] + "." + parts.slice(1).join("");
-  }
+function sanitize(input, maxDecimals) {
+  const raw = input.value;
+  const caret = input.selectionStart ?? raw.length;
+  const rawBefore = raw.slice(0, caret);
+
+  const sanitizeValue = value => {
+    const cleaned = value.replace(/[^0-9.]/g, "");
+    const parts = cleaned.split(".");
+    let next = cleaned;
+
+    if (parts.length > 2) {
+      next = parts[0] + "." + parts.slice(1).join("");
+    }
+
+    if (Number.isFinite(maxDecimals) && maxDecimals >= 0) {
+      const dotIndex = next.indexOf(".");
+      if (dotIndex !== -1) {
+        const head = next.slice(0, dotIndex);
+        const tail = next.slice(dotIndex + 1, dotIndex + 1 + maxDecimals);
+        next = head + "." + tail;
+      }
+    }
+
+    return next;
+  };
+
+  const nextValue = sanitizeValue(raw);
+  const nextBefore = sanitizeValue(rawBefore);
+
+  input.value = nextValue;
+  const nextCaret = Math.min(nextBefore.length, nextValue.length);
+  input.setSelectionRange(nextCaret, nextCaret);
 }
+
+

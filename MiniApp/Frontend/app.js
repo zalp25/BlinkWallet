@@ -1,6 +1,6 @@
 console.log("BlinkWallet loaded");
 
-/* ===== IMPORTS ===== */
+// Imports
 import { state } from "./state.js";
 
 import { initAssets, renderAssets } from "./Assets/assets.js";
@@ -8,12 +8,12 @@ import { initHome } from "./Home/home.js";
 import { initHistory } from "./History/history.js";
 import { initSettings } from "./Settings/settings.js";
 
-/* ===== MODE ===== */
+// UI state
 let overlayOpen = false;
 
-/* ===== DATA LOAD ===== */
+// Data
 async function loadRates() {
-  const res = await fetch("./Backend/rates.json");
+  const res = await fetch("./Currencies/rates.json");
   state.rates = await res.json();
 
   for (const k in state.rates) {
@@ -23,9 +23,7 @@ async function loadRates() {
   }
 }
 
-/* =========================================================
-   GLOBAL UI HELPERS — SINGLE SOURCE OF TRUTH
-   ========================================================= */
+// Global UI helpers
 
 function showNav() {
   const nav = document.getElementById("bottom-nav");
@@ -60,26 +58,21 @@ function hideBackBtn() {
 }
 
 function showTotalValue() {
-  document.querySelector(".assets-summary")
-    ?.classList.remove("hidden");
+  document.querySelector(".assets-summary")?.classList.remove("hidden");
 }
 
 function hideTotalValue() {
-  document.querySelector(".assets-summary")
-    ?.classList.add("hidden");
+  document.querySelector(".assets-summary")?.classList.add("hidden");
 }
 
 function hideDwsBalances() {
-  document.getElementById("dws-balances")
-    ?.classList.add("hidden");
+  document.getElementById("dws-balances")?.classList.add("hidden");
 
   const list = document.getElementById("dws-balances-list");
   if (list) list.innerHTML = "";
 }
 
-/* =========================================================
-   TABS
-   ========================================================= */
+// Tabs
 
 function initTabs() {
   document.querySelectorAll(".nav-item").forEach(btn => {
@@ -108,9 +101,11 @@ function initTabs() {
   });
 }
 
-/* =========================================================
-   OVERLAY CONTROL
-   ========================================================= */
+function getOverlayPanels() {
+  return document.querySelectorAll('section[id^="panel-"]');
+}
+
+// Overlays
 
 export function openOverlay(panelId, { showBack = true } = {}) {
   overlayOpen = true;
@@ -122,7 +117,7 @@ export function openOverlay(panelId, { showBack = true } = {}) {
   document.querySelectorAll(".tab")
     .forEach(t => t.classList.remove("active"));
 
-  document.querySelectorAll(".panel")
+  getOverlayPanels()
     .forEach(p => p.classList.add("hidden"));
 
   document.getElementById(panelId)
@@ -134,7 +129,7 @@ export function openOverlay(panelId, { showBack = true } = {}) {
 export function closeOverlay() {
   overlayOpen = false;
 
-  document.querySelectorAll(".panel")
+  getOverlayPanels()
     .forEach(p => p.classList.add("hidden"));
 
   hideBackBtn();
@@ -155,9 +150,7 @@ export function closeOverlay() {
   renderAssets();
 }
 
-/* =========================================================
-   BOOTSTRAP
-   ========================================================= */
+// Boot
 
 document.addEventListener("DOMContentLoaded", async () => {
   await loadRates();
@@ -169,8 +162,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   initTabs();
 
   document.getElementById("back-btn").onclick = closeOverlay;
+  document.getElementById("home-more")?.addEventListener("click", () => {
+    if (overlayOpen) return;
+    const btn = document.querySelector('[data-tab="assets"]');
+    btn?.click();
+  });
 
   showNav();
   showTotalValue();
   renderAssets();
 });
+

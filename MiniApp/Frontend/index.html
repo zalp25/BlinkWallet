@@ -19,20 +19,34 @@
 
 <main>
 
-  <!-- HOME -->
+  <!-- Home -->
   <section id="home" class="tab active">
     <h2 class="welcome">Nice to see you, 👋</h2>
     <p id="username"></p>
 
-    <h3>Market prices</h3>
-    <ul id="prices"></ul>
+    <div class="panel home-summary">
+      <div class="home-summary-main">
+        <div class="home-summary-total">
+          <div class="home-summary-label">Total balance:</div>
+          <div id="home-total-usd" class="home-summary-value">$0.00</div>
+        </div>
+
+        <div class="home-summary-roi">
+          <span class="roi-label">Todays ROI:</span>
+          <span id="home-roi-value" class="roi-neutral">-.--%</span>
+        </div>
+      </div>
+
+      <button id="home-more" class="home-summary-more">More...</button>
+    </div>
+
+    <h3>Market prices:</h3>
+    <ul id="prices" class="currency-list"></ul>
   </section>
 
-  <!-- ASSETS -->
+  <!-- Assets -->
   <section id="assets" class="tab">
-    <h2 class="tab-name">Your Assets</h2>
-
-    <!-- ASSETS SUMMARY PANEL -->
+    <!-- Total value panel -->
     <div class="panel assets-summary">
 
       <h3 class="sub-tab">Total value:</h3>
@@ -54,29 +68,36 @@
       <button id="open-swap">Swap</button>
     </div>
 
-    <ul id="assets-list"></ul>
+    <ul id="assets-list" class="currency-list"></ul>
   </section>
 
-  <!-- HISTORY -->
+  <!-- History -->
   <section id="history" class="tab">
     <h2 class="sub-tab">History:</h2>
-    <ul id="history-list"></ul>
+    <ul id="history-list" class="currency-list history-list"></ul>
   </section>
 
-  <!-- SETTINGS -->
+  <!-- Settings -->
   <section id="settings" class="tab">
     <h2 class="sub-tab">Settings</h2>
-    <p>Account settings will be here.</p>
+    <div class="panel settings-panel">
+      <label class="settings-label" for="settings-name">Display name</label>
+      <div class="settings-row">
+        <input id="settings-name" type="text" placeholder="Your name" />
+        <button id="settings-save-name">Save</button>
+      </div>
+      <p id="settings-name-error" class="error settings-error"></p>
+    </div>
   </section>
 
-  <!-- OVERLAYS -->
+  <!-- Overlays -->
 
-  <!-- DEPOSIT -->
+  <!-- Deposit -->
   <section id="panel-deposit" class="panel hidden">
     <h3>Deposit</h3>
 
     <div class="swap-row">
-      <input id="deposit-amount" type="number" inputmode="decimal" placeholder="Amount" />
+      <input id="deposit-amount" type="text" inputmode="decimal" placeholder="Amount" />
       <select id="deposit-currency"></select>
     </div>
 
@@ -87,12 +108,12 @@
     </div>
   </section>
 
-  <!-- WITHDRAW -->
+  <!-- Withdraw -->
   <section id="panel-withdraw" class="panel hidden">
     <h3>Withdraw</h3>
 
     <div class="swap-row">
-      <input id="withdraw-amount" type="number" inputmode="decimal" placeholder="Amount" />
+      <input id="withdraw-amount" type="text" inputmode="decimal" placeholder="Amount" />
       <select id="withdraw-currency"></select>
     </div>
 
@@ -104,17 +125,17 @@
     </div>
   </section>
 
-  <!-- SWAP -->
+  <!-- Swap -->
   <section id="panel-swap" class="panel hidden">
     <h3>Swap</h3>
 
     <div class="swap-row">
-      <input id="swap-from-amount" type="number" inputmode="decimal" placeholder="You pay" />
+      <input id="swap-from-amount" type="text" inputmode="decimal" placeholder="You pay" />
       <select id="swap-from-currency"></select>
     </div>
 
     <div class="swap-row">
-      <input id="swap-to-amount" type="number" inputmode="decimal" placeholder="You receive" />
+      <input id="swap-to-amount" type="text" inputmode="decimal" placeholder="You receive" />
       <select id="swap-to-currency"></select>
     </div>
 
@@ -126,13 +147,13 @@
     </div>
   </section>
 
-  <!-- DWS BALANCES -->
+  <!-- DWS balances -->
   <div id="dws-balances" class="dws-balances hidden">
     <div class="dws-balances-title">Your balances</div>
     <div id="dws-balances-list"></div>
   </div>
 
-  <!-- SUCCESS -->
+  <!-- Success -->
   <section id="panel-success" class="panel hidden panel-success">
     <div class="success-wrapper">
       <img src="./Assets/DWS/Success/success.svg" class="success-icon" alt="Success" />

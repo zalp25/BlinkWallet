@@ -1,11 +1,9 @@
-import { state, DECIMALS, sortByPriority } from "../state.js";
+import { state, DECIMALS, sortByPriority, CURRENCY_ICONS } from "../state.js";
 import { openDeposit } from "./DWS/deposit.js";
 import { openWithdraw } from "./DWS/withdraw.js";
 import { openSwap } from "./DWS/swap.js";
 
-/* =========================================================
-   INIT
-   ========================================================= */
+// Init
 
 export function initAssets() {
   document.getElementById("open-deposit").onclick = openDeposit;
@@ -16,9 +14,7 @@ export function initAssets() {
   renderAssets();
 }
 
-/* =========================================================
-   TOTAL VALUE (SINGLE RESPONSIBILITY)
-   ========================================================= */
+// Total value
 
 export function showTotalValue() {
   const summary = document.querySelector(".assets-summary");
@@ -30,9 +26,7 @@ export function hideTotalValue() {
   if (summary) summary.classList.add("hidden");
 }
 
-/* =========================================================
-   RENDER
-   ========================================================= */
+// Render
 
 export function renderAssets() {
   const ul = document.getElementById("assets-list");
@@ -49,19 +43,75 @@ export function renderAssets() {
     total += usd;
 
     const li = document.createElement("li");
-    li.textContent =
-      `${cur}: ${bal.toFixed(DECIMALS[cur])} ≈ $${usd.toFixed(2)}`;
+    li.className = "currency-card";
+
+    const left = document.createElement("div");
+    left.className = "currency-left";
+    left.appendChild(buildIcon(cur));
+
+    const mid = document.createElement("div");
+    mid.className = "currency-main";
+
+    const code = document.createElement("div");
+    code.className = "currency-code";
+    code.textContent = cur;
+
+    const label = document.createElement("div");
+    label.className = "currency-sub";
+    label.textContent = "Balance";
+
+    mid.append(code, label);
+
+    const right = document.createElement("div");
+    right.className = "currency-right";
+
+    const amount = document.createElement("div");
+    amount.className = "currency-value";
+    amount.textContent = formatAmount(bal, DECIMALS[cur]);
+
+    const usdValue = document.createElement("div");
+    usdValue.className = "currency-sub";
+    usdValue.textContent = `~ $${usd.toFixed(2)}`;
+
+    right.append(amount, usdValue);
+
+    li.append(left, mid, right);
 
     ul.appendChild(li);
   }
 
   const totalEl = document.getElementById("total-usd");
   if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
+
+  const homeTotal = document.getElementById("home-total-usd");
+  if (homeTotal) homeTotal.textContent = `$${total.toFixed(2)}`;
 }
 
-/* =========================================================
-   DWS BALANCES (ONLY ITSELF)
-   ========================================================= */
+function buildIcon(symbol) {
+  const wrap = document.createElement("div");
+  wrap.className = "currency-icon-wrap";
+
+  const img = document.createElement("img");
+  img.className = "currency-icon";
+  img.alt = `${symbol} icon`;
+  img.src = `./Currencies/icons/${CURRENCY_ICONS[symbol] ?? `${symbol.toLowerCase()}.png`}`;
+
+  img.onerror = () => {
+    wrap.classList.add("currency-icon-fallback");
+    wrap.textContent = symbol.slice(0, 1);
+  };
+
+  wrap.appendChild(img);
+  return wrap;
+}
+
+function formatAmount(value, decimals) {
+  if (!Number.isFinite(value)) return "0";
+  if (!Number.isFinite(decimals)) return String(value);
+  return value.toFixed(decimals);
+}
+
+// DWS balances
 
 export function showDwsBalances() {
   const wrapper = document.getElementById("dws-balances");
@@ -80,7 +130,7 @@ export function showDwsBalances() {
     const usd = (amount * rate).toFixed(2);
 
     const row = document.createElement("div");
-    row.textContent = `${cur}: ${amount} ≈ $${usd}`;
+    row.textContent = `${cur}: ${amount} ~ $${usd}`;
     list.appendChild(row);
   }
 }
@@ -92,3 +142,4 @@ export function hideDwsBalances() {
   const list = document.getElementById("dws-balances-list");
   if (list) list.innerHTML = "";
 }
+

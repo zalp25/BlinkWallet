@@ -10,21 +10,19 @@ export const DECIMALS = {
   TRX: 2,
   TON: 3,
   SOL: 4,
-  BLINKW: 4,
+  BLINK: 4,
   BTC: 6,
-  ETH: 6,
-  ZALP: 2
+  ETH: 6
 };
 
 export const MIN_AMOUNTS = {
   USDT: 5.0,
-  BLINKW: 0.05,
+  BLINK: 0.05,
   SOL: 0.04,
   ETH: 0.002,
   TON: 3.5,
   TRX: 17,
-  BTC: 0.00006,
-  ZALP: 0.025
+  BTC: 0.00006
 };
 
 export const MAX_AMOUNTS = {
@@ -34,8 +32,7 @@ export const MAX_AMOUNTS = {
   SOL: 2_000,
   TON: 150_000,
   TRX: 2_500_000,
-  BLINKW: 2_500,
-  ZALP: 1_000
+  BLINK: 2_500
 };
 
 export const CURRENCY_PRIORITY = [
@@ -45,9 +42,18 @@ export const CURRENCY_PRIORITY = [
   "SOL",
   "TON",
   "TRX",
-  "BLINKW",
-  "ZALP"
+  "BLINK"
 ];
+
+export const CURRENCY_ICONS = {
+  BTC: "bitcoin.png",
+  ETH: "ethereum.png",
+  SOL: "solana.png",
+  TON: "ton.png",
+  TRX: "tron.png",
+  USDT: "tether.png",
+  BLINK: "blink.png"
+};
 
 export function sortByPriority(list) {
   return [...list].sort((a, b) => {
