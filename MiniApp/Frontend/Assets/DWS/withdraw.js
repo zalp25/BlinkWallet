@@ -3,7 +3,8 @@ import {
   DECIMALS,
   MIN_AMOUNTS,
   MAX_AMOUNTS,
-  sortByPriority
+  sortByPriority,
+  saveState
 } from "../../state.js";
 
 import {
@@ -74,6 +75,7 @@ function initWithdraw() {
     const amount = Number(input.value);
 
     state.balances[cur] -= amount;
+    saveState();
 
     addHistory(`Withdraw ${amount} ${cur}`);
     renderAssets();

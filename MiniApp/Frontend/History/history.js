@@ -1,4 +1,4 @@
-import { state } from "../state.js";
+import { state, saveState } from "../state.js";
 
 export function initHistory() {
   renderHistory();
@@ -6,6 +6,7 @@ export function initHistory() {
 
 export function addHistory(text) {
   state.history.unshift({ time: Date.now(), text });
+  saveState();
   renderHistory();
 }
 

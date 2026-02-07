@@ -3,7 +3,8 @@ import {
   DECIMALS,
   MIN_AMOUNTS,
   MAX_AMOUNTS,
-  sortByPriority
+  sortByPriority,
+  saveState
 } from "../../state.js";
 
 import {
@@ -56,6 +57,7 @@ function initDeposit() {
     const val = Number(input.value);
 
     state.balances[cur] = (state.balances[cur] ?? 0) + val;
+    saveState();
 
     addHistory(`Deposit ${val} ${cur}`);
     renderAssets();

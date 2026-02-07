@@ -21,7 +21,10 @@
 
   <!-- Home -->
   <section id="home" class="tab active">
-    <h2 class="welcome">Nice to see you, <img src="./Icons/wave.svg" class="emoji-icon" alt="" /></h2>
+    <h2 class="welcome">
+      <span data-i18n="welcome">Nice to see you,</span>
+      <img src="./Icons/wave.svg" class="emoji-icon" alt="" />
+    </h2>
     <p id="username"></p>
 
     <div class="panel home-summary">
@@ -88,6 +91,7 @@
       </div>
       <p id="settings-name-error" class="error settings-error"></p>
     </div>
+
   </section>
 
   <!-- Overlays -->
@@ -171,19 +175,19 @@
 <nav id="bottom-nav" class="bottom-nav">
   <button class="nav-item active" data-tab="home">
     <img src="./Icons/home.svg" class="nav-icon" alt="" />
-    <span>Home</span>
+    <span data-i18n="nav_home">Home</span>
   </button>
   <button class="nav-item" data-tab="assets">
     <img src="./Icons/assets.svg" class="nav-icon" alt="" />
-    <span>Assets</span>
+    <span data-i18n="nav_assets">Assets</span>
   </button>
   <button class="nav-item" data-tab="history">
     <img src="./Icons/history.svg" class="nav-icon" alt="" />
-    <span>History</span>
+    <span data-i18n="nav_history">History</span>
   </button>
   <button class="nav-item" data-tab="settings">
     <img src="./Icons/settings.svg" class="nav-icon" alt="" />
-    <span>Settings</span>
+    <span data-i18n="nav_settings">Settings</span>
   </button>
 </nav>
 

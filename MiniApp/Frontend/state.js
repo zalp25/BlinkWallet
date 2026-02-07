@@ -5,6 +5,39 @@ export const state = {
   username: "Alex"
 };
 
+const STORAGE_KEY = "blinkwallet_state";
+
+export function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (data && typeof data === "object") {
+      if (data.balances && typeof data.balances === "object") {
+        state.balances = data.balances;
+      }
+      if (Array.isArray(data.history)) {
+        state.history = data.history;
+      }
+      if (typeof data.username === "string") {
+        state.username = data.username;
+      }
+    }
+  } catch {
+    // ignore corrupted storage
+  }
+}
+
+export function saveState() {
+  const payload = {
+    balances: state.balances,
+    history: state.history,
+    username: state.username
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+}
+
+
 export const DECIMALS = {
   USDT: 2,
   TRX: 2,

@@ -3,7 +3,8 @@ import {
   DECIMALS,
   MIN_AMOUNTS,
   MAX_AMOUNTS,
-  sortByPriority
+  sortByPriority,
+  saveState
 } from "../../state.js";
 
 import {
@@ -127,6 +128,7 @@ function initSwap() {
 
     state.balances[fromCur] -= amount;
     state.balances[toCur] = (state.balances[toCur] ?? 0) + receive;
+    saveState();
 
     addHistory(`Swap ${amount} ${fromCur} -> ${receive} ${toCur}`);
     renderAssets();

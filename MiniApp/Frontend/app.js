@@ -1,10 +1,10 @@
 console.log("BlinkWallet loaded");
 
 // Imports
-import { state } from "./state.js";
+import { state, loadState, saveState } from "./state.js";
 
 import { initAssets, renderAssets } from "./Assets/assets.js";
-import { initHome } from "./Home/home.js";
+import { initHome, renderHome } from "./Home/home.js";
 import { initHistory } from "./History/history.js";
 import { initSettings } from "./Settings/settings.js";
 
@@ -21,18 +21,27 @@ async function loadRates() {
       state.balances[k] = 0;
     }
   }
+
+  saveState();
 }
 
 function applyTelegramUser() {
-  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const webApp = window.Telegram?.WebApp;
+  if (!webApp) return;
+
+  webApp.ready();
+
+  const tgUser = webApp.initDataUnsafe?.user;
   if (!tgUser) return;
 
   const name = (tgUser.first_name ?? "").trim();
+  if (!name) return;
 
-  if (name) state.username = name;
+  state.username = name;
 
   const input = document.getElementById("settings-name");
-  if (input && name) input.value = name;
+  if (input) input.value = name;
+  renderHome();
 }
 
 // Global UI helpers
@@ -87,12 +96,19 @@ function hideDwsBalances() {
 // Tabs
 
 function initTabs() {
-  document.querySelectorAll(".nav-item").forEach(btn => {
+  const navItems = Array.from(document.querySelectorAll(".nav-item"));
+  const nav = document.getElementById("bottom-nav");
+
+  const updateNavIndicator = () => {
+    const activeIndex = navItems.findIndex(item => item.classList.contains("active"));
+    if (nav) nav.style.setProperty("--nav-active-index", Math.max(activeIndex, 0));
+  };
+
+  navItems.forEach(btn => {
     btn.onclick = () => {
       if (overlayOpen) return;
 
-      document.querySelectorAll(".nav-item")
-        .forEach(b => b.classList.remove("active"));
+      navItems.forEach(b => b.classList.remove("active"));
       document.querySelectorAll(".tab")
         .forEach(t => t.classList.remove("active"));
 
@@ -109,8 +125,12 @@ function initTabs() {
       } else {
         hideTotalValue();
       }
+
+      updateNavIndicator();
     };
   });
+
+  updateNavIndicator();
 }
 
 function getOverlayPanels() {
@@ -165,14 +185,16 @@ export function closeOverlay() {
 // Boot
 
 document.addEventListener("DOMContentLoaded", async () => {
+  loadState();
   await loadRates();
-  applyTelegramUser();
 
   initHome();
   initAssets();
   initHistory();
   initSettings();
   initTabs();
+
+  applyTelegramUser();
 
   document.getElementById("back-btn").onclick = closeOverlay;
   document.getElementById("home-more")?.addEventListener("click", () => {
@@ -184,5 +206,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   showNav();
   showTotalValue();
   renderAssets();
+
+  saveState();
 });
 
