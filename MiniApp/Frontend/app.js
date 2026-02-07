@@ -13,8 +13,32 @@ let overlayOpen = false;
 
 // Data
 async function loadRates() {
-  const res = await fetch("./Currencies/rates.json");
-  state.rates = await res.json();
+  const sources = [
+    "https://blinkwallet1.mr-sasha-if.workers.dev/rates",
+    "./Currencies/rates.json"
+  ];
+
+  for (const url of sources) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const data = await res.json();
+
+      if (data && data.current) {
+        state.rates = data.current;
+        state.roi = data.roi ?? {};
+        return;
+      }
+
+      if (data && typeof data === "object") {
+        state.rates = data;
+        state.roi = {};
+        return;
+      }
+    } catch {
+      // try next source
+    }
+  }
 
   for (const k in state.rates) {
     if (!(k in state.balances)) {

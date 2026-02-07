@@ -37,14 +37,26 @@ export function renderHome() {
     price.textContent = formatRate(state.rates[k]);
 
     const badge = document.createElement("div");
-    badge.className = "currency-badge";
-    badge.textContent = "-.--%";
+    const roiValue = state.roi?.[k];
+    badge.className = `currency-badge ${getRoiClass(roiValue)}`;
+    badge.textContent = formatRoi(roiValue);
 
     right.append(price, badge);
 
     li.append(left, mid, right);
     ul.appendChild(li);
   }
+}
+
+function formatRoi(value) {
+  if (!Number.isFinite(value)) return "-.--%";
+  const sign = value > 0 ? "+" : "";
+  return `${sign}${value.toFixed(2)}%`;
+}
+
+function getRoiClass(value) {
+  if (!Number.isFinite(value) || value === 0) return "roi-neutral";
+  return value > 0 ? "roi-positive" : "roi-negative";
 }
 
 function buildIcon(symbol) {

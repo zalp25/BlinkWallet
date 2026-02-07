@@ -1,5 +1,6 @@
 export const state = {
   rates: {},
+  roi: {},
   balances: {},
   history: [],
   username: "Alex"

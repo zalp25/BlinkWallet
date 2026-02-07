@@ -559,10 +559,22 @@ input.input-success {
   font-size: 0.75rem;
   font-weight: 600;
   color: #ffffff;
-  background: #00b52d;
+  background: #6b7280;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.currency-badge.roi-positive {
+  background: #00b52d;
+}
+
+.currency-badge.roi-negative {
+  background: #e15252;
+}
+
+.currency-badge.roi-neutral {
+  background: #6b7280;
 }
 
 /* History */
