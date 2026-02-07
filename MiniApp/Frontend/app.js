@@ -14,7 +14,7 @@ let overlayOpen = false;
 // Data
 async function loadRates() {
   const sources = [
-    "https://blinkwallet1.mr-sasha-if.workers.dev/rates",
+    "https://blinkwallet2.mr-sasha-if.workers.dev/rates",
     "./Currencies/rates.json"
   ];
 
