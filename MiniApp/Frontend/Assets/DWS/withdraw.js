@@ -25,6 +25,7 @@ export function openWithdraw() {
 }
 
 function initWithdraw() {
+  // Transfer flow: validate tag + amount, then call API.
   const input = document.getElementById("withdraw-amount");
   const select = document.getElementById("withdraw-currency");
   const toUser = document.getElementById("withdraw-to-user");

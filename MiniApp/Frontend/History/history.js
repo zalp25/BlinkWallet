@@ -1,10 +1,12 @@
 import { state, saveState } from "../state.js";
 
 export function initHistory() {
+  // Initial render.
   renderHistory();
 }
 
 export function addHistory(text) {
+  // Keep newest on top.
   state.history.unshift({ time: Date.now(), text });
   saveState();
   renderHistory();

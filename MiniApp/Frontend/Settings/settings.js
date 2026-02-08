@@ -4,6 +4,7 @@ import { renderHome } from "../Home/home.js";
 import { renderAssets } from "../Assets/assets.js";
 
 export function initSettings() {
+  // Settings panels: name, tag, password.
   const nameInput = document.getElementById("settings-name");
   const nameSaveBtn = document.getElementById("settings-save-name");
   const nameError = document.getElementById("settings-name-error");

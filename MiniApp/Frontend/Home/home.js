@@ -1,10 +1,12 @@
 import { state, sortByPriority, CURRENCY_ICONS } from "../state.js";
 
 export function initHome() {
+  // Initial render.
   renderHome();
 }
 
 export function renderHome() {
+  // Market prices list.
   document.getElementById("username").textContent = state.username ?? "";
 
   const ul = document.getElementById("prices");

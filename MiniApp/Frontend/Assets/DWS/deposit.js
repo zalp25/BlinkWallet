@@ -25,6 +25,7 @@ export function openDeposit() {
 }
 
 function initDeposit() {
+  // Simple local top-up + sync to backend.
   const input = document.getElementById("deposit-amount");
   const select = document.getElementById("deposit-currency");
   const error = document.getElementById("deposit-error");

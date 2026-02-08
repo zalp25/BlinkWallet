@@ -1,4 +1,4 @@
-/* Design tokens */
+/* TOKENS */
 :root {
   --color-bg-root: #121212;
   --color-bg-root-alt: #1e1e1e;
@@ -40,7 +40,7 @@
   --section-left-pad: 0.8rem;
 }
 
-/* Base */
+/* BASE */
 html {
   min-height: 100%;
   font-size: 1.25rem;
@@ -72,7 +72,7 @@ body {
   }
 }
 
-/* Typography */
+/* TYPOGRAPHY */
 h1, h2, h3 {
   margin: 0 0 var(--space-md);
   font-weight: 600;
@@ -97,16 +97,6 @@ p {
 ul {
   padding-left: 1.125rem;
   margin: var(--space-sm) 0;
-}
-
-.currency-list {
-  list-style: none;
-  padding: 0 0.18rem 0 0.05rem;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  align-items: stretch;
 }
 
 .tab-name {
@@ -152,36 +142,36 @@ h2.sub-tab {
   letter-spacing: -0.02em;
 }
 
-/* ROI */
-.roi-line {
-  margin-top: -0.4rem;
-  font-size: 0.95rem;
-  font-weight: 600;
+/* LAYOUT */
+.tab {
+  display: none;
+  animation: fadeEffect 0.2s ease-out;
+}
+
+.tab.active {
+  display: block;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@keyframes fadeEffect {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.currency-list {
+  list-style: none;
+  padding: 0 0.18rem 0 0.05rem;
+  margin: 0;
   display: flex;
-  gap: 0.35rem;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: stretch;
 }
 
-.roi-label {
-  color: var(--color-text-muted);
-}
-
-#roi-value {
-  font-weight: 700;
-}
-
-.roi-positive {
-  color: #4ade80;
-}
-
-.roi-negative {
-  color: #ff5c5c;
-}
-
-.roi-neutral {
-  color: var(--color-text-muted);
-}
-
-/* Header */
+/* HEADER */
 .top-bar {
   display: flex;
   align-items: center;
@@ -191,12 +181,6 @@ h2.sub-tab {
   z-index: 200;
   margin: -0.625rem -0.625rem 0.45rem;
   padding: 0.5rem 0.625rem 0.55rem;
-  /* border-bottom: 1px solid #a7a7a714;
-  background: linear-gradient(
-    180deg,
-    #181818,
-    #181818    
-  ); */
 }
 
 .brand {
@@ -215,7 +199,7 @@ h2.sub-tab {
   font-weight: 700;
 }
 
-/* Controls */
+/* BUTTONS */
 button {
   appearance: none;
   border: none;
@@ -260,6 +244,7 @@ button:active {
   white-space: nowrap;
 }
 
+/* INPUTS */
 input,
 select {
   appearance: none;
@@ -300,7 +285,7 @@ select option {
   width: 100%;
 }
 
-/* Errors */
+/* ERRORS */
 .error {
   font-size: 0.8125rem;
   color: var(--color-text-error);
@@ -317,25 +302,7 @@ input.input-success {
   box-shadow: 0 0 0.5rem rgba(34, 197, 94, 0.35);
 }
 
-/* Panels */
-.tab {
-  display: none;
-  animation: fadeEffect 0.2s ease-out;
-}
-
-.tab.active {
-  display: block;
-}
-
-.hidden {
-  display: none !important;
-}
-
-@keyframes fadeEffect {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+/* PANELS */
 .panel {
   margin-top: var(--space-xs);
   padding: var(--space-lg);
@@ -356,12 +323,49 @@ input.input-success {
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-/* Settings */
+/* SETTINGS */
 .settings-panel {
   margin-top: 1rem;
   padding: 0.8rem;
 }
 
+.settings-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 0.4rem;
+  padding-left: 0.4rem;
+}
+
+.settings-error {
+  margin-top: 0.4rem;
+}
+
+.settings-error-text {
+  color: var(--color-text-error);
+}
+
+.settings-success-text {
+  color: #22c55e;
+}
+
+.settings-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.settings-row input {
+  flex: 1;
+}
+
+.settings-row button {
+  min-height: 2.6rem;
+  padding: 0 1rem;
+}
+
+/* AUTH */
 .panel-auth {
   position: fixed;
   inset: 0;
@@ -424,43 +428,36 @@ body.auth-open .tab {
   display: none;
 }
 
-.settings-label {
-  display: block;
-  font-size: 1rem;
+/* ROI */
+.roi-line {
+  margin-top: -0.4rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.65);
-  margin-bottom: 0.4rem;
-  padding-left: 0.4rem;
-}
-
-.settings-error {
-  margin-top: 0.4rem;
-}
-
-.settings-error-text {
-  color: var(--color-text-error);
-}
-
-.settings-success-text {
-  color: #22c55e;
-}
-
-.settings-row {
   display: flex;
-  gap: 0.5rem;
-  align-items: center;
+  gap: 0.35rem;
 }
 
-.settings-row input {
-  flex: 1;
+.roi-label {
+  color: var(--color-text-muted);
 }
 
-.settings-row button {
-  min-height: 2.6rem;
-  padding: 0 1rem;
+#roi-value {
+  font-weight: 700;
 }
 
-/* Home / Assets */
+.roi-positive {
+  color: #4ade80;
+}
+
+.roi-negative {
+  color: #ff5c5c;
+}
+
+.roi-neutral {
+  color: var(--color-text-muted);
+}
+
+/* HOME / ASSETS */
 .assets-summary {
   margin-top: var(--space-md);
   padding: 1.1rem 1.1rem;
@@ -517,6 +514,7 @@ body.auth-open .tab {
   border-radius: 1.1rem;
 }
 
+/* CURRENCY CARDS */
 .currency-card {
   display: flex;
   align-items: center;
@@ -594,7 +592,6 @@ body.auth-open .tab {
   gap: 0.15rem;
 }
 
-
 #assets-list .currency-right {
   padding-right: 0.35rem;
 }
@@ -639,7 +636,7 @@ body.auth-open .tab {
   background: #6b7280;
 }
 
-/* History */
+/* HISTORY */
 .history-list {
   margin-top: 0.85rem;
 }
@@ -682,7 +679,7 @@ body.auth-open .tab {
   color: #e6e6e6;
 }
 
-/* Swap / Deposit / Withdraw */
+/* DEPOSIT / WITHDRAW / SWAP */
 .swap-row {
   display: flex;
   gap: var(--space-sm);
@@ -715,13 +712,11 @@ body.auth-open .tab {
 
 #confirm-deposit,
 #confirm-withdraw,
-#confirm-swap{
+#confirm-swap {
   width: 100%;
 }
 
-
-
-/* DWS balances */
+/* DWS BALANCES */
 .dws-balances {
   color: rgba(255, 255, 255, 0.36);
   margin-top: 0.8rem;
@@ -736,7 +731,7 @@ body.auth-open .tab {
   margin-bottom: 0.4rem;
 }
 
-/* Success */
+/* SUCCESS */
 .panel-success {
   position: fixed;
   inset: 0;
@@ -796,7 +791,7 @@ body.auth-open .tab {
   max-width: 16.25rem;
 }
 
-/* Bottom nav */
+/* NAV PANEL */
 .bottom-nav {
   position: fixed;
   bottom: 1.25rem;
@@ -869,4 +864,3 @@ body.auth-open .tab {
     var(--shadow-md),
     inset 0 1px 0 rgba(255,255,255,0.07);
 }
-

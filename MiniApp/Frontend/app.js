@@ -21,7 +21,7 @@ import { initSettings } from "./Settings/settings.js";
 // UI state
 let overlayOpen = false;
 
-// Data
+// Data loading
 async function loadRates() {
   const sources = ["http://localhost:8080/rates", "./Currencies/rates.json"];
 
@@ -56,6 +56,7 @@ async function loadRates() {
   saveState();
 }
 
+// Prefill name from Telegram if available.
 function applyTelegramUser() {
   const webApp = window.Telegram?.WebApp;
   if (!webApp) return;

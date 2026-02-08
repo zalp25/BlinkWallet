@@ -27,6 +27,7 @@ export function openSwap() {
 }
 
 function initSwap() {
+  // Swap uses current rates and updates balances.
   const fromInput = document.getElementById("swap-from-amount");
   const toInput = document.getElementById("swap-to-amount");
   const fromSelect = document.getElementById("swap-from-currency");

@@ -1,4 +1,5 @@
-const API_BASE = "http://localhost:8080";
+// Local API endpoint (frontend runs on 127.0.0.1:5500).
+const API_BASE = "http://127.0.0.1:8080";
 const DEFAULT_USER_ID = 1;
 
 async function safeJson(res) {
@@ -9,9 +10,17 @@ async function safeJson(res) {
   }
 }
 
+// Always include cookies for session auth.
+async function apiFetch(path, options = {}) {
+  return fetch(`${API_BASE}${path}`, {
+    credentials: "include",
+    ...options
+  });
+}
+
 export async function loadRemoteUser(userId = DEFAULT_USER_ID) {
   try {
-    const res = await fetch(`${API_BASE}/user?id=${userId}`);
+    const res = await apiFetch(`/user?id=${userId}`);
     if (!res.ok) return null;
     return await safeJson(res);
   } catch {
@@ -21,7 +30,7 @@ export async function loadRemoteUser(userId = DEFAULT_USER_ID) {
 
 export async function registerUser(payload) {
   try {
-    const res = await fetch(`${API_BASE}/auth/register`, {
+    const res = await apiFetch("/auth/register", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(payload)
@@ -35,7 +44,7 @@ export async function registerUser(payload) {
 
 export async function loginUser(payload) {
   try {
-    const res = await fetch(`${API_BASE}/auth/login`, {
+    const res = await apiFetch("/auth/login", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(payload)
@@ -47,9 +56,19 @@ export async function loginUser(payload) {
   }
 }
 
+export async function getSessionUser() {
+  try {
+    const res = await apiFetch("/auth/me");
+    if (!res.ok) return null;
+    return await safeJson(res);
+  } catch {
+    return null;
+  }
+}
+
 export async function saveRemoteUser(userId = DEFAULT_USER_ID, name) {
   try {
-    const res = await fetch(`${API_BASE}/user`, {
+    const res = await apiFetch("/user", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ user_id: userId, name })
@@ -62,7 +81,7 @@ export async function saveRemoteUser(userId = DEFAULT_USER_ID, name) {
 
 export async function updateUserTag(userId = DEFAULT_USER_ID, tag) {
   try {
-    const res = await fetch(`${API_BASE}/user/tag`, {
+    const res = await apiFetch("/user/tag", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ user_id: userId, tag })
@@ -76,7 +95,7 @@ export async function updateUserTag(userId = DEFAULT_USER_ID, tag) {
 
 export async function updateUserPassword(userId = DEFAULT_USER_ID, password) {
   try {
-    const res = await fetch(`${API_BASE}/user/password`, {
+    const res = await apiFetch("/user/password", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ user_id: userId, password })
@@ -90,7 +109,7 @@ export async function updateUserPassword(userId = DEFAULT_USER_ID, password) {
 
 export async function loadRemoteBalances(userId = DEFAULT_USER_ID) {
   try {
-    const res = await fetch(`${API_BASE}/balances?id=${userId}`);
+    const res = await apiFetch(`/balances?id=${userId}`);
     if (!res.ok) return null;
     const data = await safeJson(res);
     return data?.balances ?? null;
@@ -101,7 +120,7 @@ export async function loadRemoteBalances(userId = DEFAULT_USER_ID) {
 
 export async function saveRemoteBalances(userId = DEFAULT_USER_ID, balances) {
   try {
-    const res = await fetch(`${API_BASE}/balances`, {
+    const res = await apiFetch("/balances", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ user_id: userId, balances })
@@ -114,7 +133,7 @@ export async function saveRemoteBalances(userId = DEFAULT_USER_ID, balances) {
 
 export async function transferToUser(payload) {
   try {
-    const res = await fetch(`${API_BASE}/transfer`, {
+    const res = await apiFetch("/transfer", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(payload)

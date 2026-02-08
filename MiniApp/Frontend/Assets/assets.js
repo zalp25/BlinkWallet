@@ -6,6 +6,7 @@ import { openSwap } from "./DWS/swap.js";
 // Init
 
 export function initAssets() {
+  // Actions + initial render.
   document.getElementById("open-deposit").onclick = openDeposit;
   document.getElementById("open-withdraw").onclick = openWithdraw;
   document.getElementById("open-swap").onclick = openSwap;

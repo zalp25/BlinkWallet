@@ -4,9 +4,11 @@ import { renderHome } from "./Home/home.js";
 import { renderAssets } from "./Assets/assets.js";
 import { showNav, hideNav, showTotalValue, hideTotalValue } from "./ui.js";
 
+// Tag rules: 3-12, lowercase, digits, _ . -
 const TAG_PATTERN = /^[a-z0-9_.-]{3,12}$/;
 
 export function initAuth() {
+  // Auth modal wiring.
   const panel = document.getElementById("panel-auth");
   if (!panel) return;
 

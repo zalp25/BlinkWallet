@@ -1,7 +1,9 @@
 package main
 
 import (
+	"crypto/rand"
 	"database/sql"
+	"encoding/hex"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -22,6 +24,7 @@ const (
 )
 
 func main() {
+	// DB is optional; file fallback always stays.
 	log.Println("rates updater started")
 
 	db, err := openDB()
@@ -49,6 +52,7 @@ func main() {
 	}
 }
 
+// Pull external prices and add local assets.
 func fetchRates() (map[string]float64, error) {
 	rates := map[string]float64{
 		"USDT":  1.00,
@@ -80,6 +84,7 @@ func fetchRates() (map[string]float64, error) {
 	return rates, nil
 }
 
+// Keep a local JSON snapshot as a fallback.
 func saveRates(rates map[string]float64) error {
 	tmp := outputFile + ".tmp"
 
@@ -95,6 +100,7 @@ func saveRates(rates map[string]float64) error {
 	return os.Rename(tmp, outputFile)
 }
 
+// Open MySQL connection from env.
 func openDB() (*sql.DB, error) {
 	dsn := os.Getenv("MYSQL_DSN")
 	if dsn == "" {
@@ -117,6 +123,7 @@ func openDB() (*sql.DB, error) {
 	return db, nil
 }
 
+// Write one snapshot to DB.
 func saveRatesToDB(db *sql.DB, rates map[string]float64) error {
 	if db == nil {
 		return nil
@@ -138,6 +145,7 @@ func saveRatesToDB(db *sql.DB, rates map[string]float64) error {
 	return err
 }
 
+// API: rates, auth, balances, transfers.
 func startServer(db *sql.DB) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/rates", func(w http.ResponseWriter, r *http.Request) {
@@ -145,7 +153,7 @@ func startServer(db *sql.DB) {
 			return
 		}
 		w.Header().Set("content-type", "application/json")
-		w.Header().Set("access-control-allow-origin", "*")
+		setOriginHeaders(w, r)
 
 		current, err := loadCurrentRates(db)
 		if err != nil {
@@ -185,7 +193,7 @@ func startServer(db *sql.DB) {
 			return
 		}
 		w.Header().Set("content-type", "application/json")
-		w.Header().Set("access-control-allow-origin", "*")
+		setOriginHeaders(w, r)
 
 		if db == nil {
 			http.Error(w, `{"error":"db disabled"}`, http.StatusServiceUnavailable)
@@ -194,7 +202,7 @@ func startServer(db *sql.DB) {
 
 		switch r.Method {
 		case http.MethodGet:
-			userID := getUserID(r)
+			userID := resolveUserID(db, r, getUserID(r))
 			user, err := loadUser(db, userID)
 			if err == sql.ErrNoRows {
 				name := os.Getenv("DEFAULT_NAME")
@@ -220,9 +228,7 @@ func startServer(db *sql.DB) {
 				http.Error(w, `{"error":"bad json"}`, http.StatusBadRequest)
 				return
 			}
-			if payload.UserID == 0 {
-				payload.UserID = getUserID(r)
-			}
+			payload.UserID = resolveUserID(db, r, payload.UserID)
 			if payload.Name == "" {
 				http.Error(w, `{"error":"name required"}`, http.StatusBadRequest)
 				return
@@ -246,7 +252,7 @@ func startServer(db *sql.DB) {
 			return
 		}
 		w.Header().Set("content-type", "application/json")
-		w.Header().Set("access-control-allow-origin", "*")
+		setOriginHeaders(w, r)
 
 		if db == nil {
 			http.Error(w, `{"error":"db disabled"}`, http.StatusServiceUnavailable)
@@ -307,6 +313,10 @@ func startServer(db *sql.DB) {
 			log.Println("init balances error:", err)
 		}
 
+		if err := createSession(w, db, userID); err != nil {
+			log.Println("session create error:", err)
+		}
+
 		_ = json.NewEncoder(w).Encode(map[string]any{
 			"user_id": userID,
 			"name":    name,
@@ -319,7 +329,7 @@ func startServer(db *sql.DB) {
 			return
 		}
 		w.Header().Set("content-type", "application/json")
-		w.Header().Set("access-control-allow-origin", "*")
+		setOriginHeaders(w, r)
 
 		if db == nil {
 			http.Error(w, `{"error":"db disabled"}`, http.StatusServiceUnavailable)
@@ -362,6 +372,36 @@ func startServer(db *sql.DB) {
 			return
 		}
 
+		if err := createSession(w, db, user["user_id"].(int)); err != nil {
+			log.Println("session create error:", err)
+		}
+
+		_ = json.NewEncoder(w).Encode(user)
+	})
+
+	mux.HandleFunc("/auth/me", func(w http.ResponseWriter, r *http.Request) {
+		if handlePreflight(w, r) {
+			return
+		}
+		w.Header().Set("content-type", "application/json")
+		setOriginHeaders(w, r)
+
+		if db == nil {
+			http.Error(w, `{"error":"db disabled"}`, http.StatusServiceUnavailable)
+			return
+		}
+
+		userID, ok := getSessionUserID(db, r)
+		if !ok {
+			http.Error(w, `{"error":"not authenticated"}`, http.StatusUnauthorized)
+			return
+		}
+
+		user, err := loadUser(db, userID)
+		if err != nil {
+			http.Error(w, `{"error":"db error"}`, http.StatusInternalServerError)
+			return
+		}
 		_ = json.NewEncoder(w).Encode(user)
 	})
 
@@ -370,7 +410,7 @@ func startServer(db *sql.DB) {
 			return
 		}
 		w.Header().Set("content-type", "application/json")
-		w.Header().Set("access-control-allow-origin", "*")
+		setOriginHeaders(w, r)
 
 		if db == nil {
 			http.Error(w, `{"error":"db disabled"}`, http.StatusServiceUnavailable)
@@ -390,6 +430,7 @@ func startServer(db *sql.DB) {
 			return
 		}
 		tag := normalizeTag(payload.Tag)
+		payload.UserID = resolveUserID(db, r, payload.UserID)
 		if payload.UserID <= 0 || !validTag(tag) {
 			http.Error(w, `{"error":"invalid tag"}`, http.StatusBadRequest)
 			return
@@ -411,7 +452,7 @@ func startServer(db *sql.DB) {
 			return
 		}
 		w.Header().Set("content-type", "application/json")
-		w.Header().Set("access-control-allow-origin", "*")
+		setOriginHeaders(w, r)
 
 		if db == nil {
 			http.Error(w, `{"error":"db disabled"}`, http.StatusServiceUnavailable)
@@ -430,6 +471,7 @@ func startServer(db *sql.DB) {
 			http.Error(w, `{"error":"bad json"}`, http.StatusBadRequest)
 			return
 		}
+		payload.UserID = resolveUserID(db, r, payload.UserID)
 		if payload.UserID <= 0 {
 			http.Error(w, `{"error":"invalid user"}`, http.StatusBadRequest)
 			return
@@ -458,7 +500,7 @@ func startServer(db *sql.DB) {
 			return
 		}
 		w.Header().Set("content-type", "application/json")
-		w.Header().Set("access-control-allow-origin", "*")
+		setOriginHeaders(w, r)
 
 		if db == nil {
 			http.Error(w, `{"error":"db disabled"}`, http.StatusServiceUnavailable)
@@ -467,7 +509,7 @@ func startServer(db *sql.DB) {
 
 		switch r.Method {
 		case http.MethodGet:
-			userID := getUserID(r)
+			userID := resolveUserID(db, r, getUserID(r))
 			balances, err := loadBalances(db, userID)
 			if err == sql.ErrNoRows {
 				balances = map[string]float64{
@@ -498,9 +540,7 @@ func startServer(db *sql.DB) {
 				http.Error(w, `{"error":"bad json"}`, http.StatusBadRequest)
 				return
 			}
-			if payload.UserID == 0 {
-				payload.UserID = getUserID(r)
-			}
+			payload.UserID = resolveUserID(db, r, payload.UserID)
 			if err := saveBalances(db, payload.UserID, payload.Balances); err != nil {
 				log.Println("balances save error:", err)
 				http.Error(w, `{"error":"db error"}`, http.StatusInternalServerError)
@@ -520,7 +560,7 @@ func startServer(db *sql.DB) {
 			return
 		}
 		w.Header().Set("content-type", "application/json")
-		w.Header().Set("access-control-allow-origin", "*")
+		setOriginHeaders(w, r)
 
 		if db == nil {
 			http.Error(w, `{"error":"db disabled"}`, http.StatusServiceUnavailable)
@@ -543,6 +583,7 @@ func startServer(db *sql.DB) {
 		}
 
 		tag := normalizeTag(payload.ToTag)
+		payload.FromUserID = resolveUserID(db, r, payload.FromUserID)
 		if payload.FromUserID <= 0 || !validTag(tag) {
 			http.Error(w, `{"error":"invalid recipient"}`, http.StatusBadRequest)
 			return
@@ -703,18 +744,19 @@ func loadRatesFromFile() (map[string]float64, error) {
 	return rates, nil
 }
 
+// CORS helpers.
 func handlePreflight(w http.ResponseWriter, r *http.Request) bool {
 	if r.Method != http.MethodOptions {
 		return false
 	}
-	setCORSHeaders(w)
+	setCORSHeaders(w, r)
 	w.WriteHeader(http.StatusNoContent)
 	return true
 }
 
 func withCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		setCORSHeaders(w)
+		setCORSHeaders(w, r)
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
 			return
@@ -723,12 +765,34 @@ func withCORS(next http.Handler) http.Handler {
 	})
 }
 
-func setCORSHeaders(w http.ResponseWriter) {
-	w.Header().Set("access-control-allow-origin", "*")
+func setCORSHeaders(w http.ResponseWriter, r *http.Request) {
+	origin := allowedOrigin(r.Header.Get("Origin"))
+	if origin != "" {
+		w.Header().Set("access-control-allow-origin", origin)
+		w.Header().Set("access-control-allow-credentials", "true")
+	}
 	w.Header().Set("access-control-allow-methods", "GET,POST,OPTIONS")
 	w.Header().Set("access-control-allow-headers", "content-type")
 }
 
+func setOriginHeaders(w http.ResponseWriter, r *http.Request) {
+	origin := allowedOrigin(r.Header.Get("Origin"))
+	if origin != "" {
+		w.Header().Set("access-control-allow-origin", origin)
+		w.Header().Set("access-control-allow-credentials", "true")
+	}
+}
+
+func allowedOrigin(origin string) string {
+	switch origin {
+	case "http://127.0.0.1:5500", "http://localhost:5500":
+		return origin
+	default:
+		return ""
+	}
+}
+
+// User identity helpers.
 func getUserID(r *http.Request) int {
 	raw := r.URL.Query().Get("id")
 	if raw == "" {
@@ -744,6 +808,70 @@ func getUserID(r *http.Request) int {
 	return id
 }
 
+func resolveUserID(db *sql.DB, r *http.Request, fallback int) int {
+	if fallback > 0 {
+		return fallback
+	}
+	if db == nil {
+		return 0
+	}
+	if userID, ok := getSessionUserID(db, r); ok {
+		return userID
+	}
+	return 0
+}
+
+// Read session cookie and resolve user.
+func getSessionUserID(db *sql.DB, r *http.Request) (int, bool) {
+	cookie, err := r.Cookie("bw_session")
+	if err != nil || cookie.Value == "" {
+		return 0, false
+	}
+	row := db.QueryRow(
+		`SELECT user_id FROM sessions WHERE token = ? AND expires_at > NOW()`,
+		cookie.Value,
+	)
+	var userID int
+	if err := row.Scan(&userID); err != nil {
+		return 0, false
+	}
+	return userID, true
+}
+
+// Create a session cookie and DB entry.
+func createSession(w http.ResponseWriter, db *sql.DB, userID int) error {
+	token, err := newToken(32)
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec(
+		`INSERT INTO sessions (token, user_id, created_at, expires_at)
+		 VALUES (?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY))`,
+		token, userID,
+	)
+	if err != nil {
+		return err
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "bw_session",
+		Value:    token,
+		Path:     "/",
+		MaxAge:   60 * 60 * 24 * 30,
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+	})
+
+	return nil
+}
+
+func newToken(bytesCount int) (string, error) {
+	buf := make([]byte, bytesCount)
+	if _, err := rand.Read(buf); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(buf), nil
+}
 func loadUser(db *sql.DB, userID int) (map[string]any, error) {
 	row := db.QueryRow(`SELECT user_id, name, tag FROM users WHERE user_id = ?`, userID)
 	var id int
