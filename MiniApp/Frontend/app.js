@@ -2,6 +2,16 @@ console.log("BlinkWallet loaded");
 
 // Imports
 import { state, loadState, saveState } from "./state.js";
+import { saveRemoteBalances } from "./api.js";
+import { initAuth, requireAuth } from "./auth.js";
+import {
+  showNav,
+  hideNav,
+  showBackBtn,
+  hideBackBtn,
+  showTotalValue,
+  hideTotalValue
+} from "./ui.js";
 
 import { initAssets, renderAssets } from "./Assets/assets.js";
 import { initHome, renderHome } from "./Home/home.js";
@@ -13,7 +23,7 @@ let overlayOpen = false;
 
 // Data
 async function loadRates() {
-  const sources = ["./Currencies/rates.json"];
+  const sources = ["http://localhost:8080/rates", "./Currencies/rates.json"];
 
   for (const url of sources) {
     try {
@@ -58,53 +68,11 @@ function applyTelegramUser() {
   const name = (tgUser.first_name ?? "").trim();
   if (!name) return;
 
-  state.username = name;
-
-  const input = document.getElementById("settings-name");
-  if (input) input.value = name;
-  renderHome();
-}
-
-// Global UI helpers
-
-function showNav() {
-  const nav = document.getElementById("bottom-nav");
-  if (!nav) return;
-
-  nav.style.display = "";
-  nav.classList.remove("hidden");
-}
-
-function hideNav() {
-  const nav = document.getElementById("bottom-nav");
-  if (!nav) return;
-
-  nav.classList.add("hidden");
-  nav.style.display = "none";
-}
-
-function showBackBtn() {
-  const btn = document.getElementById("back-btn");
-  if (!btn) return;
-
-  btn.style.display = "";
-  btn.classList.remove("hidden");
-}
-
-function hideBackBtn() {
-  const btn = document.getElementById("back-btn");
-  if (!btn) return;
-
-  btn.classList.add("hidden");
-  btn.style.display = "none";
-}
-
-function showTotalValue() {
-  document.querySelector(".assets-summary")?.classList.remove("hidden");
-}
-
-function hideTotalValue() {
-  document.querySelector(".assets-summary")?.classList.add("hidden");
+  if (state.loggedIn) return;
+  const regInput = document.getElementById("register-name");
+  if (regInput && !regInput.value.trim()) {
+    regInput.value = name;
+  }
 }
 
 function hideDwsBalances() {
@@ -128,6 +96,10 @@ function initTabs() {
   navItems.forEach(btn => {
     btn.onclick = () => {
       if (overlayOpen) return;
+      if (!state.loggedIn) {
+        requireAuth();
+        return;
+      }
 
       navItems.forEach(b => b.classList.remove("active"));
       document.querySelectorAll(".tab")
@@ -213,6 +185,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initAssets();
   initHistory();
   initSettings();
+  initAuth();
   initTabs();
 
   applyTelegramUser();
@@ -224,10 +197,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     btn?.click();
   });
 
-  showNav();
-  showTotalValue();
-  renderAssets();
+  if (!state.loggedIn) {
+    requireAuth();
+  } else {
+    showNav();
+    showTotalValue();
+    renderAssets();
+  }
 
   saveState();
+
+  setInterval(() => {
+    if (!state.loggedIn || !state.userId) return;
+    saveRemoteBalances(state.userId, state.balances);
+  }, 30000);
 });
 

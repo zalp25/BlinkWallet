@@ -3,39 +3,18 @@ export const state = {
   roi: {},
   balances: {},
   history: [],
-  username: "Alex"
+  username: "",
+  userId: null,
+  userTag: "",
+  loggedIn: false
 };
 
-const STORAGE_KEY = "blinkwallet_state";
-
 export function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-    const data = JSON.parse(raw);
-    if (data && typeof data === "object") {
-      if (data.balances && typeof data.balances === "object") {
-        state.balances = data.balances;
-      }
-      if (Array.isArray(data.history)) {
-        state.history = data.history;
-      }
-      if (typeof data.username === "string") {
-        state.username = data.username;
-      }
-    }
-  } catch {
-    // ignore corrupted storage
-  }
+  // no-op: storage disabled (DB only)
 }
 
 export function saveState() {
-  const payload = {
-    balances: state.balances,
-    history: state.history,
-    username: state.username
-  };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  // no-op: storage disabled (DB only)
 }
 
 

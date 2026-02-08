@@ -92,6 +92,23 @@
       <p id="settings-name-error" class="error settings-error"></p>
     </div>
 
+    <div class="panel settings-panel">
+      <label class="settings-label" for="settings-tag">User tag</label>
+      <div class="settings-row">
+        <input id="settings-tag" type="text" placeholder="your_tag" />
+        <button id="settings-save-tag">Save</button>
+      </div>
+      <p id="settings-tag-error" class="error settings-error"></p>
+    </div>
+
+    <div class="panel settings-panel">
+      <label class="settings-label" for="settings-password">Password</label>
+      <div class="settings-row">
+        <input id="settings-password" type="password" placeholder="New password" />
+        <button id="settings-save-password">Save</button>
+      </div>
+      <p id="settings-password-error" class="error settings-error"></p>
+    </div>
   </section>
 
   <!-- Overlays -->
@@ -115,6 +132,10 @@
   <!-- Withdraw -->
   <section id="panel-withdraw" class="panel hidden">
     <h3>Withdraw</h3>
+
+    <div class="swap-row">
+      <input id="withdraw-to-user" type="text" placeholder="To user (tag)" />
+    </div>
 
     <div class="swap-row">
       <input id="withdraw-amount" type="text" inputmode="decimal" placeholder="Amount" />
@@ -167,6 +188,31 @@
 
     <div class="success-actions">
       <button id="success-close" class="btn-done">Done</button>
+    </div>
+  </section>
+
+  <!-- Auth -->
+  <section id="panel-auth" class="hidden panel-auth">
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button id="auth-tab-login" class="auth-tab active">Login</button>
+        <button id="auth-tab-register" class="auth-tab">Register</button>
+      </div>
+
+      <form id="auth-login" class="auth-form">
+        <input id="login-tag" type="text" placeholder="tag" />
+        <input id="login-password" type="password" placeholder="password" />
+        <p id="auth-login-error" class="error"></p>
+        <button type="submit">Login</button>
+      </form>
+
+      <form id="auth-register" class="auth-form hidden">
+        <input id="register-name" type="text" placeholder="name" />
+        <input id="register-tag" type="text" placeholder="tag" />
+        <input id="register-password" type="password" placeholder="password" />
+        <p id="auth-register-error" class="error"></p>
+        <button type="submit">Register</button>
+      </form>
     </div>
   </section>
 

@@ -328,7 +328,7 @@ input.input-success {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 @keyframes fadeEffect {
@@ -360,6 +360,68 @@ input.input-success {
 .settings-panel {
   margin-top: 1rem;
   padding: 0.8rem;
+}
+
+.panel-auth {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  background: rgba(24, 24, 24, 0.82);
+  backdrop-filter: blur(6px);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  padding: 1rem;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #2a2a2a, #1d1d1d);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 0.6rem 0.8rem;
+  border-radius: 14px;
+  border: none;
+  background: #2b2b2b;
+  color: #cfcfcf;
+  font-weight: 600;
+}
+
+.auth-tab.active {
+  background: #3a3a3a;
+  color: #fff;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.auth-form input {
+  width: 100%;
+}
+
+.auth-form button {
+  width: 100%;
+}
+
+body.auth-open header,
+body.auth-open nav,
+body.auth-open .tab {
+  display: none;
 }
 
 .settings-label {

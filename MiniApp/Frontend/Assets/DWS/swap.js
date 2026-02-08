@@ -6,6 +6,7 @@ import {
   sortByPriority,
   saveState
 } from "../../state.js";
+import { saveRemoteBalances } from "../../api.js";
 
 import {
   renderAssets,
@@ -129,6 +130,9 @@ function initSwap() {
     state.balances[fromCur] -= amount;
     state.balances[toCur] = (state.balances[toCur] ?? 0) + receive;
     saveState();
+    if (state.loggedIn && state.userId) {
+      saveRemoteBalances(state.userId, state.balances);
+    }
 
     addHistory(`Swap ${amount} ${fromCur} -> ${receive} ${toCur}`);
     renderAssets();

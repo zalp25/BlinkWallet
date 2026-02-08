@@ -6,6 +6,7 @@ import {
   sortByPriority,
   saveState
 } from "../../state.js";
+import { saveRemoteBalances } from "../../api.js";
 
 import {
   renderAssets,
@@ -58,6 +59,9 @@ function initDeposit() {
 
     state.balances[cur] = (state.balances[cur] ?? 0) + val;
     saveState();
+    if (state.loggedIn && state.userId) {
+      saveRemoteBalances(state.userId, state.balances);
+    }
 
     addHistory(`Deposit ${val} ${cur}`);
     renderAssets();

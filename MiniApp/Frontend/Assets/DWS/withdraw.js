@@ -16,6 +16,7 @@ import {
 import { addHistory } from "../../History/history.js";
 import { openOverlay } from "../../app.js";
 import { showSuccess } from "./Success/success.js";
+import { loadRemoteBalances, transferToUser } from "../../api.js";
 
 export function openWithdraw() {
   openOverlay("panel-withdraw");
@@ -26,11 +27,13 @@ export function openWithdraw() {
 function initWithdraw() {
   const input = document.getElementById("withdraw-amount");
   const select = document.getElementById("withdraw-currency");
+  const toUser = document.getElementById("withdraw-to-user");
   const error = document.getElementById("withdraw-error");
   const maxBtn = document.getElementById("withdraw-max");
   const confirmBtn = document.getElementById("confirm-withdraw");
 
   input.value = "";
+  if (toUser) toUser.value = "";
   error.textContent = "";
   select.innerHTML = "";
   confirmBtn.disabled = true;
@@ -56,6 +59,13 @@ function initWithdraw() {
     validate();
   };
 
+  if (toUser) {
+    toUser.oninput = () => {
+      toUser.value = toUser.value.toLowerCase().replace(/[^a-z0-9_.-]/g, "");
+      validate();
+    };
+  }
+
   select.onchange = () => {
     input.value = "";
     clearError();
@@ -68,29 +78,58 @@ function initWithdraw() {
     validate();
   };
 
-  confirmBtn.onclick = () => {
+  confirmBtn.onclick = async () => {
     if (!validate()) return;
 
     const cur = select.value;
     const amount = Number(input.value);
+    const tag = toUser?.value.trim().toLowerCase();
 
-    state.balances[cur] -= amount;
+    const { ok, data } = await transferToUser({
+      from_user_id: state.userId,
+      to_tag: tag,
+      symbol: cur,
+      amount
+    });
+
+    if (!ok) {
+      setError(data?.error ?? "Transfer failed");
+      return;
+    }
+
+    const updated = await loadRemoteBalances(state.userId);
+    if (updated) state.balances = updated;
     saveState();
 
-    addHistory(`Withdraw ${amount} ${cur}`);
+    addHistory(`Transfer ${amount} ${cur} to @${tag}`);
     renderAssets();
     hideDwsBalances();
 
     showSuccess({
-      summary: `Withdraw ${amount} ${cur}`
+      summary: `Transfer ${amount} ${cur} to @${tag}`
     });
   };
 
   function validate() {
     const cur = select.value;
     const amount = Number(input.value);
+    const tag = toUser?.value.trim().toLowerCase();
 
     clearError();
+
+    if (!state.loggedIn || !state.userId) {
+      setError("Login required");
+      return false;
+    }
+
+    if (!tag) {
+      setError("Recipient tag required");
+      return false;
+    }
+    if (!/^[a-z0-9_.-]{3,12}$/.test(tag)) {
+      setError("Invalid recipient tag");
+      return false;
+    }
 
     if (!Number.isFinite(amount) || amount <= 0) {
       setError("Invalid amount");
@@ -119,12 +158,14 @@ function initWithdraw() {
   function setError(msg) {
     error.textContent = msg;
     input.classList.add("input-error");
+    if (toUser) toUser.classList.add("input-error");
     confirmBtn.disabled = true;
   }
 
   function clearError() {
     error.textContent = "";
     input.classList.remove("input-error");
+    if (toUser) toUser.classList.remove("input-error");
   }
 }
 
