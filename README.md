@@ -20,8 +20,8 @@
 
 ### 1) База даних (MySQL)
 Потрібна локальна MySQL (Workbench або інше).
+<img width="527" height="435" alt="image" src="https://github.com/user-attachments/assets/d678003d-0aaa-408f-af0c-c33332371216" />
 
-<img width="415" height="490" alt="image" src="https://github.com/user-attachments/assets/e7c4084b-769b-486b-81ed-adfa1543d6ab" />
 
 **Схема таблиць:**
 
@@ -40,6 +40,10 @@
 - `transfers`
 
 <img width="437" height="166" alt="image" src="https://github.com/user-attachments/assets/8b0d7f30-18b4-40c0-89d3-0ef1eca95daa" />
+
+- `sessions`
+
+<img width="420" height="147" alt="image" src="https://github.com/user-attachments/assets/29fa7f79-8506-43ed-9dda-6539f1aa31d8" />
 
 
 > Важливо:

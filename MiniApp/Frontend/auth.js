@@ -1,5 +1,5 @@
 import { state } from "./state.js";
-import { loadRemoteBalances, loginUser, registerUser } from "./api.js";
+import { getSessionUser, loadRemoteBalances, loginUser, registerUser } from "./api.js";
 import { renderHome } from "./Home/home.js";
 import { renderAssets } from "./Assets/assets.js";
 import { showNav, hideNav, showTotalValue, hideTotalValue } from "./ui.js";
@@ -117,6 +117,13 @@ export function requireAuth() {
   hideNav();
   hideTotalValue();
   document.body.classList.add("auth-open");
+}
+
+export async function trySessionLogin() {
+  const data = await getSessionUser();
+  if (!data) return false;
+  await applyAuth(data);
+  return true;
 }
 
 async function applyAuth(data) {

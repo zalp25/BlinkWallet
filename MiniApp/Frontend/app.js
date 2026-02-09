@@ -3,7 +3,7 @@ console.log("BlinkWallet loaded");
 // Imports
 import { state, loadState, saveState } from "./state.js";
 import { saveRemoteBalances } from "./api.js";
-import { initAuth, requireAuth } from "./auth.js";
+import { initAuth, requireAuth, trySessionLogin } from "./auth.js";
 import {
   showNav,
   hideNav,
@@ -187,6 +187,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   initHistory();
   initSettings();
   initAuth();
+  const hasSession = await trySessionLogin();
+  if (!hasSession) {
+    requireAuth();
+  }
   initTabs();
 
   applyTelegramUser();

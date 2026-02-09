@@ -259,6 +259,7 @@ func startServer(db *sql.DB) {
 			return
 		}
 		if r.Method != http.MethodPost {
+			log.Printf("auth/register method=%s origin=%s", r.Method, r.Header.Get("Origin"))
 			http.Error(w, `{"error":"method not allowed"}`, http.StatusMethodNotAllowed)
 			return
 		}
@@ -336,6 +337,7 @@ func startServer(db *sql.DB) {
 			return
 		}
 		if r.Method != http.MethodPost {
+			log.Printf("auth/login method=%s origin=%s", r.Method, r.Header.Get("Origin"))
 			http.Error(w, `{"error":"method not allowed"}`, http.StatusMethodNotAllowed)
 			return
 		}
