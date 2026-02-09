@@ -20,6 +20,7 @@
 
 ### 1) База даних (MySQL)
 Потрібна локальна MySQL (Workbench або інше).
+
 <img width="527" height="435" alt="image" src="https://github.com/user-attachments/assets/d678003d-0aaa-408f-af0c-c33332371216" />
 
 
@@ -44,12 +45,6 @@
 - `sessions`
 
 <img width="420" height="147" alt="image" src="https://github.com/user-attachments/assets/29fa7f79-8506-43ed-9dda-6539f1aa31d8" />
-
-
-> Важливо:
-> - `users.user_id` має бути AUTO_INCREMENT  
-> - `users.tag` — UNIQUE  
-> - `password_hash` — VARCHAR(255)  
 
 ---
 
