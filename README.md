@@ -1,15 +1,18 @@
 Версія README другої покращеної версії з базою даних знаходиться в гілці local-with-db, причина окремої гілки і відсутності БД в main гілці викликана проблемами з хостингом та обмеженням використання API оновлення курсів.
 
 # BlinkWallet — Telegram Mini App демо криптогаманець.
+
 <img width="640" height="360" alt="image" src="https://github.com/user-attachments/assets/5896eade-add2-4137-8c44-c4e257c535e0" />
 
 ## Як запустити в Telegram (короткий туторіал)
 
 1. Відкрийте посилання на бота: **@blink_wallet_bot**.
 2. Натисніть кнопку **Wallet**.
+
 <img width="713" height="523" alt="image" src="https://github.com/user-attachments/assets/4587a6dc-df59-4dd3-bfc6-c4c58b7f51d7" />
 
 3. Відкриється Mini App з вашим гаманцем.
+
 <img width="454" height="520" alt="image" src="https://github.com/user-attachments/assets/722e5faa-41a6-4338-bb1f-f2a851f8947f" />
 
 > **Примітка:** бот працює тільки у випадку його запуску через термінал, сам сайт, який відкриває бот(як MiniApp) хоститься через Cloudflare, та може бути відкритим напряму через посилання:
@@ -18,6 +21,7 @@
 ## Що вміє бот (повний функціонал)
 
 ### 1) Home (Головна)
+
 <img width="342" height="473" alt="image" src="https://github.com/user-attachments/assets/230748d1-1696-4147-8671-358744f420ee" />
 
 Вкладка Home надає коротку відомість про баланс користувача, нижче курси конкретних монет:
@@ -26,6 +30,7 @@
 Також через відсутність бази даних не зберігається історія цін криптовалют, тому % змін цін валют та Roi не обраховуються. Вони підготовлено до інтеграції з real-time API.
 
 ### 2) Assets (Активи)
+
 <img width="340" height="477" alt="image" src="https://github.com/user-attachments/assets/d1ecce6b-9868-4977-a4a4-dc70aaf69cab" />
 
 Вкладка Assets надає розширені відомості про активи користувача, розписані баланси кожної валюти, їх вартості в $ та загальний баланс, також наявні 3 функціональні кнопки "Deposit", "Withdraw", "Swap".
@@ -55,12 +60,14 @@
 ### 4) History (Історія)
 Автоматичне логування депозитів, виводів і свопів.
 Відображення дати та часу кожної операції.
+
 <img width="359" height="460" alt="image" src="https://github.com/user-attachments/assets/3228c818-5f73-4d97-aed8-6fb1bff9bbcb" />
 
 
 ### 5) Settings (Налаштування)
 Зміна відображуваного імені.
 Ліміт довжини імені (до 12 символів).
+
 <img width="359" height="467" alt="image" src="https://github.com/user-attachments/assets/68a31831-bee7-4c54-932e-efbbf205c3dd" />
 
 
