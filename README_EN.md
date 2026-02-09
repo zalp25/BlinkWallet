@@ -49,13 +49,6 @@ A local MySQL instance is required (Workbench or any alternative).
 
 <img width="420" height="147" alt="image" src="https://github.com/user-attachments/assets/29fa7f79-8506-43ed-9dda-6539f1aa31d8" />
 
-
-Important:
-
-* `users.user_id` must be AUTO_INCREMENT
-* `users.tag` must be UNIQUE
-* `password_hash` — VARCHAR(255)
-
 ---
 
 ### 2) Start backend server (rates.go)
