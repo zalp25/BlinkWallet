@@ -1,6 +1,7 @@
 // Runtime state (DB is source of truth).
 export const state = {
   rates: {},
+  dailyRates: {},
   roi: {},
   balances: {},
   history: [],

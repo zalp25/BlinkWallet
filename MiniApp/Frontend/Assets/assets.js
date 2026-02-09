@@ -86,6 +86,8 @@ export function renderAssets() {
 
   const homeTotal = document.getElementById("home-total-usd");
   if (homeTotal) homeTotal.textContent = `$${total.toFixed(2)}`;
+
+  updateRoi(total);
 }
 
 function buildIcon(symbol) {
@@ -104,6 +106,43 @@ function buildIcon(symbol) {
 
   wrap.appendChild(img);
   return wrap;
+}
+
+function updateRoi(currentTotal) {
+  const roiEl = document.getElementById("roi-value");
+  const homeRoiEl = document.getElementById("home-roi-value");
+
+  const dailyRates = state.dailyRates ?? {};
+  let dailyTotal = 0;
+  let hasDaily = false;
+
+  for (const cur of Object.keys(state.balances)) {
+    const bal = state.balances[cur] ?? 0;
+    const rate = dailyRates[cur];
+    if (Number.isFinite(rate)) {
+      dailyTotal += bal * rate;
+      hasDaily = true;
+    }
+  }
+
+  if (!hasDaily || dailyTotal === 0 || !Number.isFinite(currentTotal)) {
+    setRoiText(roiEl, "-.--%", "roi-neutral");
+    setRoiText(homeRoiEl, "-.--%", "roi-neutral");
+    return;
+  }
+
+  const roi = ((currentTotal - dailyTotal) / dailyTotal) * 100;
+  const text = `${roi > 0 ? "+" : ""}${roi.toFixed(2)}%`;
+  const cls = roi === 0 ? "roi-neutral" : roi > 0 ? "roi-positive" : "roi-negative";
+  setRoiText(roiEl, text, cls);
+  setRoiText(homeRoiEl, text, cls);
+}
+
+function setRoiText(el, text, cls) {
+  if (!el) return;
+  el.textContent = text;
+  el.classList.remove("roi-positive", "roi-negative", "roi-neutral");
+  el.classList.add(cls);
 }
 
 function formatAmount(value, decimals) {

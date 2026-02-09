@@ -109,12 +109,16 @@ http://127.0.0.1:5500
 
 ### 2) Home
 
+<img width="414" height="158" alt="image" src="https://github.com/user-attachments/assets/e400a174-7003-40c2-b437-b681fcc67037" />
+
 <img width="437" height="704" alt="image" src="https://github.com/user-attachments/assets/2509b378-834c-4972-8b0b-974857acf474" />
 
 * Displays market rates (USDT, BTC, ETH, SOL, TON, TRX, BLINK)
 * Shows 24h ROI
 
 ### 3) Assets
+
+<img width="432" height="317" alt="image" src="https://github.com/user-attachments/assets/89639e81-93bb-4c82-92f8-aa7c852d6af0" />
 
 <img width="437" height="705" alt="image" src="https://github.com/user-attachments/assets/dec958d1-4715-437e-bf2a-61e498cfd90c" />
 

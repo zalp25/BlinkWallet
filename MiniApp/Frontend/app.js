@@ -33,12 +33,14 @@ async function loadRates() {
 
       if (data && data.current) {
         state.rates = data.current;
+        state.dailyRates = data.daily ?? {};
         state.roi = data.roi ?? {};
         return;
       }
 
       if (data && typeof data === "object") {
         state.rates = data;
+        state.dailyRates = {};
         state.roi = {};
         return;
       }
